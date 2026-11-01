@@ -1,0 +1,29 @@
+name: Bug report
+description: Report incorrect runtime, CLI, or plugin integration behavior.
+body:
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+      description: Explain the problem and what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include commands and synthetic configuration. Remove credentials and private records.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: AgentQit version or commit, Python version, operating system, plugin version, and installation method.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Relevant output
+      description: Include the redacted JSON result or error, if available.

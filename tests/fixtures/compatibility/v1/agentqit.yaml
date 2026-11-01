@@ -1,0 +1,8 @@
+apiVersion: agentqit/v1
+name: compatibility
+profile: qa.yaml
+registry: [operations]
+auth:
+  api-token:
+    kind: bearer
+    credentialRef: compatibility/token

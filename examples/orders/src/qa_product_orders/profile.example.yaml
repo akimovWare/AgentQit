@@ -1,0 +1,4 @@
+environment: unconfigured
+services:
+  orders:
+    baseUrl: https://orders.example.invalid

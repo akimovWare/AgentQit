@@ -1,0 +1,592 @@
+{
+  "$defs": {
+    "DatabaseServiceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "commandTimeoutSeconds": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Commandtimeoutseconds",
+          "type": "number"
+        },
+        "connectTimeoutSeconds": {
+          "default": 10,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Connecttimeoutseconds",
+          "type": "number"
+        },
+        "dsn": {
+          "title": "Dsn",
+          "type": "string"
+        },
+        "maxPoolSize": {
+          "default": 5,
+          "minimum": 1,
+          "title": "Maxpoolsize",
+          "type": "integer"
+        },
+        "minPoolSize": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Minpoolsize",
+          "type": "integer"
+        },
+        "passwordRef": {
+          "title": "Passwordref",
+          "type": "string"
+        },
+        "schema": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Schema"
+        },
+        "tlsRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tlsref"
+        },
+        "usernameRef": {
+          "title": "Usernameref",
+          "type": "string"
+        }
+      },
+      "required": [
+        "dsn",
+        "usernameRef",
+        "passwordRef"
+      ],
+      "title": "DatabaseServiceConfig",
+      "type": "object"
+    },
+    "EnvironmentCredentialConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "bindings": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Bindings",
+          "type": "object"
+        },
+        "provider": {
+          "const": "env",
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider"
+      ],
+      "title": "EnvironmentCredentialConfig",
+      "type": "object"
+    },
+    "HttpServiceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "authRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Authref"
+        },
+        "baseUrl": {
+          "title": "Baseurl",
+          "type": "string"
+        },
+        "tlsRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tlsref"
+        }
+      },
+      "required": [
+        "baseUrl"
+      ],
+      "title": "HttpServiceConfig",
+      "type": "object"
+    },
+    "KafkaClusterConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "bootstrapServers": {
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Bootstrapservers",
+          "type": "array"
+        },
+        "clientIdPrefix": {
+          "default": "qa-cli",
+          "title": "Clientidprefix",
+          "type": "string"
+        },
+        "passwordRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Passwordref"
+        },
+        "requestTimeoutSeconds": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Requesttimeoutseconds",
+          "type": "number"
+        },
+        "saslMechanism": {
+          "anyOf": [
+            {
+              "enum": [
+                "PLAIN",
+                "SCRAM-SHA-256",
+                "SCRAM-SHA-512"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Saslmechanism"
+        },
+        "securityProtocol": {
+          "default": "PLAINTEXT",
+          "enum": [
+            "PLAINTEXT",
+            "SSL",
+            "SASL_PLAINTEXT",
+            "SASL_SSL"
+          ],
+          "title": "Securityprotocol",
+          "type": "string"
+        },
+        "tlsRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tlsref"
+        },
+        "topics": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Topics",
+          "type": "object"
+        },
+        "truststore": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KafkaTruststoreConfig"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "usernameRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Usernameref"
+        }
+      },
+      "required": [
+        "bootstrapServers"
+      ],
+      "title": "KafkaClusterConfig",
+      "type": "object"
+    },
+    "KafkaTruststoreConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "format": "path",
+          "title": "Location",
+          "type": "string"
+        },
+        "passwordRef": {
+          "title": "Passwordref",
+          "type": "string"
+        },
+        "type": {
+          "const": "JKS",
+          "default": "JKS",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "location",
+        "passwordRef"
+      ],
+      "title": "KafkaTruststoreConfig",
+      "type": "object"
+    },
+    "KubernetesServiceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "context": {
+          "title": "Context",
+          "type": "string"
+        },
+        "endpoint": {
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "executable": {
+          "format": "path",
+          "title": "Executable",
+          "type": "string"
+        },
+        "requestTimeoutSeconds": {
+          "default": 15,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Requesttimeoutseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "endpoint",
+        "executable",
+        "context"
+      ],
+      "title": "KubernetesServiceConfig",
+      "type": "object"
+    },
+    "S3ServiceConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "accessKeyRef": {
+          "title": "Accesskeyref",
+          "type": "string"
+        },
+        "addressingStyle": {
+          "default": "path",
+          "enum": [
+            "path",
+            "virtual"
+          ],
+          "title": "Addressingstyle",
+          "type": "string"
+        },
+        "buckets": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Buckets",
+          "type": "object"
+        },
+        "connectTimeoutSeconds": {
+          "default": 10,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Connecttimeoutseconds",
+          "type": "number"
+        },
+        "endpoint": {
+          "title": "Endpoint",
+          "type": "string"
+        },
+        "region": {
+          "title": "Region",
+          "type": "string"
+        },
+        "requestTimeoutSeconds": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Requesttimeoutseconds",
+          "type": "number"
+        },
+        "secretKeyRef": {
+          "title": "Secretkeyref",
+          "type": "string"
+        },
+        "sessionTokenRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sessiontokenref"
+        },
+        "tlsRef": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tlsref"
+        }
+      },
+      "required": [
+        "endpoint",
+        "region",
+        "accessKeyRef",
+        "secretKeyRef"
+      ],
+      "title": "S3ServiceConfig",
+      "type": "object"
+    },
+    "VaultCredentialConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "address": {
+          "title": "Address",
+          "type": "string"
+        },
+        "authMode": {
+          "default": "session",
+          "enum": [
+            "session",
+            "token-env"
+          ],
+          "title": "Authmode",
+          "type": "string"
+        },
+        "authPath": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Authpath"
+        },
+        "authRole": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Authrole"
+        },
+        "bindings": {
+          "additionalProperties": {
+            "$ref": "#/$defs/VaultSecretBinding"
+          },
+          "title": "Bindings",
+          "type": "object"
+        },
+        "caBundle": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cabundle"
+        },
+        "namespace": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Namespace"
+        },
+        "provider": {
+          "const": "vault-cli",
+          "default": "vault-cli",
+          "title": "Provider",
+          "type": "string"
+        },
+        "timeoutSeconds": {
+          "default": 30,
+          "exclusiveMinimum": 0,
+          "maximum": 120,
+          "title": "Timeoutseconds",
+          "type": "number"
+        }
+      },
+      "required": [
+        "address"
+      ],
+      "title": "VaultCredentialConfig",
+      "type": "object"
+    },
+    "VaultSecretBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "title": "Field",
+          "type": "string"
+        },
+        "mount": {
+          "title": "Mount",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "version": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Version"
+        }
+      },
+      "required": [
+        "mount",
+        "path",
+        "field"
+      ],
+      "title": "VaultSecretBinding",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "credentials": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EnvironmentCredentialConfig"
+        },
+        {
+          "$ref": "#/$defs/VaultCredentialConfig"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Credentials"
+    },
+    "databases": {
+      "additionalProperties": {
+        "$ref": "#/$defs/DatabaseServiceConfig"
+      },
+      "title": "Databases",
+      "type": "object"
+    },
+    "defaults": {
+      "additionalProperties": true,
+      "title": "Defaults",
+      "type": "object"
+    },
+    "endpoints": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Endpoints",
+      "type": "object"
+    },
+    "environment": {
+      "default": "unknown",
+      "title": "Environment",
+      "type": "string"
+    },
+    "kafka": {
+      "additionalProperties": {
+        "$ref": "#/$defs/KafkaClusterConfig"
+      },
+      "title": "Kafka",
+      "type": "object"
+    },
+    "kubernetes": {
+      "additionalProperties": {
+        "$ref": "#/$defs/KubernetesServiceConfig"
+      },
+      "title": "Kubernetes",
+      "type": "object"
+    },
+    "s3": {
+      "additionalProperties": {
+        "$ref": "#/$defs/S3ServiceConfig"
+      },
+      "title": "S3",
+      "type": "object"
+    },
+    "services": {
+      "additionalProperties": {
+        "$ref": "#/$defs/HttpServiceConfig"
+      },
+      "title": "Services",
+      "type": "object"
+    }
+  },
+  "title": "Profile",
+  "type": "object"
+}

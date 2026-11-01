@@ -1,0 +1,26 @@
+apiVersion: qa.runtime/v1
+kind: OperationRegistry
+operations:
+  - id: items.get
+    purpose: Read an item by its identifier
+    kind: http
+    mutating: false
+    admission: prototype
+    parameters:
+      itemId:
+        type: string
+        required: true
+        location: path
+    config:
+      service: api
+      method: GET
+      path: /items/{itemId}
+  - id: items.create
+    purpose: Create an item
+    kind: http
+    mutating: true
+    admission: prototype
+    config:
+      service: api
+      method: POST
+      path: /items

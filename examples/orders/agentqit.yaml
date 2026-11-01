@@ -1,0 +1,7 @@
+apiVersion: agentqit/v1
+name: orders
+registry: [src/qa_product_orders/operations.yaml]
+profile: profile.demo.yaml
+browser:
+  allowedOrigins: [http://127.0.0.1:8765]
+  trace: true

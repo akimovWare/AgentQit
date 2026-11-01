@@ -1,0 +1,124 @@
+{
+  "apiVersion": "qa.runtime/v1",
+  "kind": "OperationRegistry",
+  "operations": [
+    {
+      "id": "orders.list",
+      "purpose": "Orders list",
+      "kind": "http",
+      "mutating": false,
+      "admission": "agent-read",
+      "parameters": {},
+      "config": {
+        "service": "orders",
+        "method": "GET",
+        "path": "/api/orders"
+      },
+      "contractRef": {
+        "artifact": "orders-demo-openapi",
+        "version": "1.0.0",
+        "operationId": "orders.list",
+        "provenance": "pinned-artifact",
+        "checksumSha256": "5557d3cbc56d2b23dc93a91e28bf5aa376e7ef020f59cfc3cbcd816de957ffeb"
+      }
+    },
+    {
+      "id": "orders.get",
+      "purpose": "Orders get",
+      "kind": "http",
+      "mutating": false,
+      "admission": "agent-read",
+      "parameters": {
+        "order-id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "location": "path",
+          "name": "id"
+        }
+      },
+      "config": {
+        "service": "orders",
+        "method": "GET",
+        "path": "/api/orders/{id}"
+      },
+      "contractRef": {
+        "artifact": "orders-demo-openapi",
+        "version": "1.0.0",
+        "operationId": "orders.get",
+        "provenance": "pinned-artifact",
+        "checksumSha256": "5557d3cbc56d2b23dc93a91e28bf5aa376e7ef020f59cfc3cbcd816de957ffeb"
+      }
+    },
+    {
+      "id": "orders.create",
+      "purpose": "Orders create",
+      "kind": "http",
+      "mutating": true,
+      "admission": "agent-mutate",
+      "parameters": {
+        "idempotency-key": {
+          "type": "string",
+          "required": true,
+          "location": "header",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "title": {
+          "type": "string",
+          "required": true,
+          "location": "body",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      },
+      "config": {
+        "service": "orders",
+        "method": "POST",
+        "path": "/api/orders"
+      },
+      "contractRef": {
+        "artifact": "orders-demo-openapi",
+        "version": "1.0.0",
+        "operationId": "orders.create",
+        "provenance": "pinned-artifact",
+        "checksumSha256": "5557d3cbc56d2b23dc93a91e28bf5aa376e7ef020f59cfc3cbcd816de957ffeb"
+      }
+    },
+    {
+      "id": "orders.cancel",
+      "purpose": "Orders cancel",
+      "kind": "http",
+      "mutating": true,
+      "admission": "agent-mutate",
+      "parameters": {
+        "idempotency-key": {
+          "type": "string",
+          "required": true,
+          "location": "header",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "order-id": {
+          "type": "string",
+          "format": "uuid",
+          "required": true,
+          "location": "path",
+          "name": "id"
+        }
+      },
+      "config": {
+        "service": "orders",
+        "method": "POST",
+        "path": "/api/orders/{id}/cancel"
+      },
+      "contractRef": {
+        "artifact": "orders-demo-openapi",
+        "version": "1.0.0",
+        "operationId": "orders.cancel",
+        "provenance": "pinned-artifact",
+        "checksumSha256": "5557d3cbc56d2b23dc93a91e28bf5aa376e7ef020f59cfc3cbcd816de957ffeb"
+      }
+    }
+  ]
+}

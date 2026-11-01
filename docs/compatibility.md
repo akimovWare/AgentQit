@@ -1,0 +1,78 @@
+# Compatibility policy
+
+This policy starts with AgentQit 0.1.0. A package update and a configuration migration
+are separate actions. AgentQit never rewrites a user's workspace during installation,
+startup, planning, or upgrade.
+
+## Versioned contracts
+
+| Surface | Current contract | Promise |
+| --- | --- | --- |
+| Workspace manifest | `apiVersion: agentqit/v1` | Existing valid v1 manifests keep their meaning in 0.1.x |
+| Profile | Referenced by a v1 workspace | The reviewed v1 profile fields/defaults follow the same policy |
+| Operation catalog | `apiVersion: qa.runtime/v1` | Existing declarations remain accepted in 0.1.x |
+| CLI/MCP results | `schema_version: "1.0"` | Envelope fields, meanings, exit codes, and uncertain-outcome semantics remain compatible in 0.1.x |
+| Product plugins | `qa.product/v1` and the [documented Python surface](plugin-api.md) | Initially pin the exact tested AgentQit version |
+| Local session/journal state | Internal | Finish and close tasks before upgrading; active sessions are not portable across versions |
+
+Profile filenames are user choices. `qa.yaml` and the generated `profile.yaml` use
+the same schema. Credentials remain in their explicitly selected external source.
+
+## Package versions
+
+Use PEP 440 versions: for example `0.1.0`, `0.1.1`, and `0.2.0rc1`.
+
+- A patch release (`0.1.0` to `0.1.1`) fixes behavior while preserving these contracts.
+  Bug fixes can change incorrect observations; document changes in the changelog.
+- During 0.x, a minor release can change a documented extension interface. Publish
+  the changes, tested plugin versions, and migration instructions before adoption.
+- An incompatible YAML change requires a new schema identifier, even during 0.x.
+  Do not change the meaning of an existing field under the same identifier.
+- Additive optional fields need schema review. Consumers should tolerate documented
+  additive result fields; producers preserve existing required fields and types.
+- A security fix can intentionally reject a previously accepted unsafe configuration.
+  Explain the rejection and a safe migration explicitly.
+
+Unknown schema versions and extra configuration fields fail closed. There is no
+implicit downgrade, silent coercion to a future schema, or automatic file migration.
+The profile has no independent version tag; its compatibility is governed by its
+workspace/catalog contract and the package policy above.
+
+## Reviewing a contract change
+
+The checked-in [JSON Schemas](schemas/) are a review baseline. They include public
+YAML aliases and the result envelope. They are not a replacement for compilation
+or behavioral validation.
+
+```sh
+qa workspace schema
+uv run python tools/export_contracts.py --check
+```
+
+CI checks both these snapshots and a frozen v1 consumer workspace. To refresh
+snapshots after reviewing an intentional compatible addition:
+
+```sh
+uv run python tools/export_contracts.py
+```
+
+Review the schema diff, document the change, and keep the old consumer fixture.
+For an incompatible revision, add a new baseline and explicit migration guidance
+instead of replacing the old contract silently. Schemas cannot prove preservation
+of runtime semantics; behavioral tests remain necessary.
+
+## Upgrades and rollback
+
+Finish tasks, stop MCP, back up the workspace, read release notes, and update the
+application separately. Re-provision browser binaries if Playwright changed, then
+restart the host. Use `qa --version` or `agentqit-mcp --version` to identify the build.
+
+For an incompatible change, migration instructions must identify changed fields,
+provide before/after YAML, describe the offline validation command, and explain
+rollback. A future migration command must write a new file or require an explicit
+opt-in and backup. No migration command is needed for the initial v1 release.
+
+The recommended initial installation constrains `>=0.1,<0.2`, so normal upgrades
+stay within the 0.1.x promise. Change that constraint explicitly to adopt a new
+minor series after reading its migration notes. CI should pin a reviewed application version. Plugins keep exact runtime pins until
+an explicitly tested compatible range is published. See [installation and updates](distribution.md).

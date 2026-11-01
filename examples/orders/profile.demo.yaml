@@ -1,0 +1,5 @@
+# Synthetic loopback-only QA fixture, not an external environment.
+environment: qa
+services:
+  orders:
+    baseUrl: http://127.0.0.1:8765

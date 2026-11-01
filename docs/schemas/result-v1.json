@@ -1,0 +1,287 @@
+{
+  "$defs": {
+    "Correlation": {
+      "properties": {
+        "trace_id": {
+          "title": "Trace Id",
+          "type": "string"
+        },
+        "traceparent": {
+          "title": "Traceparent",
+          "type": "string"
+        }
+      },
+      "required": [
+        "trace_id",
+        "traceparent"
+      ],
+      "title": "Correlation",
+      "type": "object"
+    },
+    "ErrorItem": {
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "details": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Details"
+        },
+        "documentation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Documentation"
+        },
+        "execution_outcome": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ExecutionOutcome"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "hint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Hint"
+        },
+        "http_status": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Http Status"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "operation": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation"
+        },
+        "retry_advice": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RetryAdvice"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "retryable": {
+          "default": false,
+          "title": "Retryable",
+          "type": "boolean"
+        },
+        "source": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "title": "ErrorItem",
+      "type": "object"
+    },
+    "ExecutionOutcome": {
+      "enum": [
+        "not_sent",
+        "confirmed",
+        "unknown"
+      ],
+      "type": "string"
+    },
+    "ResultStatus": {
+      "enum": [
+        "success",
+        "failure",
+        "timeout",
+        "blocked",
+        "partial"
+      ],
+      "title": "ResultStatus",
+      "type": "string"
+    },
+    "RetryAdvice": {
+      "enum": [
+        "read_state_first",
+        "same_key_only",
+        "safe",
+        "do_not_retry"
+      ],
+      "type": "string"
+    }
+  },
+  "description": "Stable public result contract shared by CLI, SDK, CI and future MCP tools.",
+  "properties": {
+    "command": {
+      "title": "Command",
+      "type": "string"
+    },
+    "correlation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Correlation"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "duration_ms": {
+      "title": "Duration Ms",
+      "type": "integer"
+    },
+    "environment": {
+      "title": "Environment",
+      "type": "string"
+    },
+    "error": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ErrorItem"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "evidence": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "exit_code": {
+      "title": "Exit Code",
+      "type": "integer"
+    },
+    "finished_at": {
+      "format": "date-time",
+      "title": "Finished At",
+      "type": "string"
+    },
+    "result": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "integer"
+        },
+        {
+          "type": "number"
+        },
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Result"
+    },
+    "run_id": {
+      "title": "Run Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "1.0",
+      "default": "1.0",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ResultStatus"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "command",
+    "status",
+    "exit_code",
+    "run_id",
+    "environment",
+    "started_at",
+    "finished_at",
+    "duration_ms"
+  ],
+  "title": "CommandResult",
+  "type": "object"
+}

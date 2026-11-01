@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling==1.33.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agentqit-orders"
+version = "0.1.0"
+description = "Synthetic Orders integration and local UI for AgentQit"
+requires-python = ">=3.12"
+readme = "README.md"
+license = "MIT"
+dependencies = ["agentqit==0.1.0"]
+
+[project.entry-points."qa_runtime.products"]
+orders = "qa_product_orders:product_plugin"
+
+[project.scripts]
+agentqit-orders-demo = "qa_product_orders.demo:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/qa_product_orders"]

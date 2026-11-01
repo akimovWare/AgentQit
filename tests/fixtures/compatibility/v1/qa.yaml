@@ -1,0 +1,9 @@
+environment: qa
+services:
+  api:
+    baseUrl: https://api.example.invalid
+    authRef: api-token
+credentials:
+  provider: env
+  bindings:
+    compatibility/token: AGENTQIT_COMPATIBILITY_TOKEN

@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose a reusable capability or an integration improvement.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the backend testing task and the current limitation.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain how a human or agent would use the capability and observe its result.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Mention existing operations or plugin composition you have considered.

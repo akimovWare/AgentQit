@@ -1,0 +1,515 @@
+{
+  "$defs": {
+    "CodecDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "checksumSha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checksumsha256"
+        },
+        "descriptorPath": {
+          "anyOf": [
+            {
+              "format": "path",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Descriptorpath"
+        },
+        "format": {
+          "enum": [
+            "json",
+            "utf8",
+            "base64",
+            "protobuf"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "messageType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Messagetype"
+        }
+      },
+      "required": [
+        "format"
+      ],
+      "title": "CodecDefinition",
+      "type": "object"
+    },
+    "ContractReference": {
+      "additionalProperties": false,
+      "properties": {
+        "artifact": {
+          "title": "Artifact",
+          "type": "string"
+        },
+        "checksumSha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checksumsha256"
+        },
+        "messageType": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Messagetype"
+        },
+        "operationId": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operationid"
+        },
+        "provenance": {
+          "default": "unverified",
+          "enum": [
+            "unverified",
+            "audited-checkout",
+            "pinned-artifact"
+          ],
+          "title": "Provenance",
+          "type": "string"
+        },
+        "sourceRevision": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sourcerevision"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artifact",
+        "version"
+      ],
+      "title": "ContractReference",
+      "type": "object"
+    },
+    "EffectiveContractOverride": {
+      "additionalProperties": false,
+      "properties": {
+        "contractValue": {
+          "title": "Contractvalue"
+        },
+        "effectiveValue": {
+          "title": "Effectivevalue"
+        },
+        "evidence": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "reason": {
+          "title": "Reason",
+          "type": "string"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        },
+        "target": {
+          "title": "Target",
+          "type": "string"
+        }
+      },
+      "required": [
+        "target",
+        "contractValue",
+        "effectiveValue",
+        "source",
+        "reason"
+      ],
+      "title": "EffectiveContractOverride",
+      "type": "object"
+    },
+    "OperationDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "admission": {
+          "default": "prototype",
+          "enum": [
+            "prototype",
+            "diagnostic",
+            "agent-read",
+            "agent-mutate",
+            "expert-only"
+          ],
+          "title": "Admission",
+          "type": "string"
+        },
+        "config": {
+          "additionalProperties": true,
+          "title": "Config",
+          "type": "object"
+        },
+        "contractRef": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ContractReference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "effectiveOverrides": {
+          "items": {
+            "$ref": "#/$defs/EffectiveContractOverride"
+          },
+          "title": "Effectiveoverrides",
+          "type": "array"
+        },
+        "errorHints": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Errorhints",
+          "type": "object"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "default": "http",
+          "title": "Kind",
+          "type": "string"
+        },
+        "mutating": {
+          "default": false,
+          "title": "Mutating",
+          "type": "boolean"
+        },
+        "parameters": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ParameterDefinition"
+          },
+          "title": "Parameters",
+          "type": "object"
+        },
+        "purpose": {
+          "default": "",
+          "title": "Purpose",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id"
+      ],
+      "title": "OperationDefinition",
+      "type": "object"
+    },
+    "ParameterDefinition": {
+      "additionalProperties": false,
+      "properties": {
+        "additionalProperties": {
+          "default": true,
+          "title": "Additionalproperties",
+          "type": "boolean"
+        },
+        "default": {
+          "default": null,
+          "title": "Default"
+        },
+        "enum": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Enum"
+        },
+        "exclusiveMaximum": {
+          "default": false,
+          "title": "Exclusivemaximum",
+          "type": "boolean"
+        },
+        "exclusiveMinimum": {
+          "default": false,
+          "title": "Exclusiveminimum",
+          "type": "boolean"
+        },
+        "format": {
+          "anyOf": [
+            {
+              "enum": [
+                "uuid",
+                "date",
+                "date-time"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Format"
+        },
+        "items": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ParameterDefinition"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "lessThan": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lessthan"
+        },
+        "location": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Location"
+        },
+        "maxItems": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxitems"
+        },
+        "maxLength": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maxlength"
+        },
+        "maximum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Maximum"
+        },
+        "minItems": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minitems"
+        },
+        "minLength": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minlength"
+        },
+        "minimum": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Minimum"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        },
+        "properties": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/ParameterDefinition"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Properties"
+        },
+        "required": {
+          "default": false,
+          "title": "Required",
+          "type": "boolean"
+        },
+        "type": {
+          "anyOf": [
+            {
+              "enum": [
+                "string",
+                "number",
+                "integer",
+                "boolean",
+                "object",
+                "array"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Type"
+        },
+        "uniqueItems": {
+          "default": false,
+          "title": "Uniqueitems",
+          "type": "boolean"
+        }
+      },
+      "title": "ParameterDefinition",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "qa.runtime/v1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "codecs": {
+      "additionalProperties": {
+        "$ref": "#/$defs/CodecDefinition"
+      },
+      "title": "Codecs",
+      "type": "object"
+    },
+    "kind": {
+      "const": "OperationRegistry",
+      "title": "Kind",
+      "type": "string"
+    },
+    "operations": {
+      "items": {
+        "$ref": "#/$defs/OperationDefinition"
+      },
+      "title": "Operations",
+      "type": "array"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "kind",
+    "operations"
+  ],
+  "title": "RegistryDocument",
+  "type": "object"
+}

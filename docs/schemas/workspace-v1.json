@@ -1,0 +1,273 @@
+{
+  "$defs": {
+    "BrowserSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "actionTimeoutSeconds": {
+          "default": 20,
+          "exclusiveMinimum": 0,
+          "maximum": 120,
+          "title": "Actiontimeoutseconds",
+          "type": "number"
+        },
+        "allowedOrigins": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Allowedorigins",
+          "type": "array"
+        },
+        "browser": {
+          "default": "chromium",
+          "enum": [
+            "chromium",
+            "firefox",
+            "webkit"
+          ],
+          "title": "Browser",
+          "type": "string"
+        },
+        "credentialRefs": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 64,
+          "title": "Credentialrefs",
+          "type": "array"
+        },
+        "headless": {
+          "default": true,
+          "title": "Headless",
+          "type": "boolean"
+        },
+        "maxElements": {
+          "default": 100,
+          "maximum": 500,
+          "minimum": 1,
+          "title": "Maxelements",
+          "type": "integer"
+        },
+        "maxPages": {
+          "default": 4,
+          "maximum": 16,
+          "minimum": 1,
+          "title": "Maxpages",
+          "type": "integer"
+        },
+        "maxTextCharacters": {
+          "default": 12000,
+          "maximum": 50000,
+          "minimum": 100,
+          "title": "Maxtextcharacters",
+          "type": "integer"
+        },
+        "trace": {
+          "default": false,
+          "title": "Trace",
+          "type": "boolean"
+        },
+        "viewportHeight": {
+          "default": 720,
+          "maximum": 1080,
+          "minimum": 240,
+          "title": "Viewportheight",
+          "type": "integer"
+        },
+        "viewportWidth": {
+          "default": 1280,
+          "maximum": 1920,
+          "minimum": 320,
+          "title": "Viewportwidth",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "allowedOrigins"
+      ],
+      "title": "BrowserSettings",
+      "type": "object"
+    },
+    "HeaderAuthConfig": {
+      "additionalProperties": false,
+      "properties": {
+        "credentialRef": {
+          "maxLength": 256,
+          "minLength": 1,
+          "title": "Credentialref",
+          "type": "string"
+        },
+        "headerName": {
+          "default": "X-API-Key",
+          "title": "Headername",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "bearer",
+            "api-key"
+          ],
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "credentialRef"
+      ],
+      "title": "HeaderAuthConfig",
+      "type": "object"
+    },
+    "SessionSettings": {
+      "additionalProperties": false,
+      "properties": {
+        "idleSeconds": {
+          "default": 300,
+          "exclusiveMinimum": 0,
+          "maximum": 3600,
+          "title": "Idleseconds",
+          "type": "number"
+        },
+        "lifetimeSeconds": {
+          "default": 900,
+          "exclusiveMinimum": 0,
+          "maximum": 3600,
+          "title": "Lifetimeseconds",
+          "type": "number"
+        },
+        "maxActive": {
+          "default": 4,
+          "maximum": 16,
+          "minimum": 1,
+          "title": "Maxactive",
+          "type": "integer"
+        },
+        "maxArtifactBytes": {
+          "default": 10485760,
+          "maximum": 52428800,
+          "minimum": 1024,
+          "title": "Maxartifactbytes",
+          "type": "integer"
+        },
+        "maxOperations": {
+          "default": 200,
+          "maximum": 2000,
+          "minimum": 1,
+          "title": "Maxoperations",
+          "type": "integer"
+        },
+        "maxTotal": {
+          "default": 128,
+          "maximum": 1024,
+          "minimum": 1,
+          "title": "Maxtotal",
+          "type": "integer"
+        },
+        "maxTotalArtifactBytes": {
+          "default": 52428800,
+          "maximum": 209715200,
+          "minimum": 1024,
+          "title": "Maxtotalartifactbytes",
+          "type": "integer"
+        }
+      },
+      "title": "SessionSettings",
+      "type": "object"
+    },
+    "WorkspaceLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "operationTimeoutSeconds": {
+          "default": 60,
+          "exclusiveMinimum": 0,
+          "maximum": 300,
+          "title": "Operationtimeoutseconds",
+          "type": "number"
+        }
+      },
+      "title": "WorkspaceLimits",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "apiVersion": {
+      "const": "agentqit/v1",
+      "title": "Apiversion",
+      "type": "string"
+    },
+    "auth": {
+      "additionalProperties": {
+        "$ref": "#/$defs/HeaderAuthConfig"
+      },
+      "title": "Auth",
+      "type": "object"
+    },
+    "browser": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/BrowserSettings"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "limits": {
+      "$ref": "#/$defs/WorkspaceLimits"
+    },
+    "name": {
+      "maxLength": 64,
+      "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+      "title": "Name",
+      "type": "string"
+    },
+    "product": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Product"
+    },
+    "profile": {
+      "default": "profile.yaml",
+      "format": "path",
+      "title": "Profile",
+      "type": "string"
+    },
+    "registry": {
+      "anyOf": [
+        {
+          "items": {
+            "format": "path",
+            "type": "string"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Registry"
+    },
+    "sessions": {
+      "$ref": "#/$defs/SessionSettings"
+    }
+  },
+  "required": [
+    "apiVersion",
+    "name"
+  ],
+  "title": "WorkspaceManifest",
+  "type": "object"
+}
