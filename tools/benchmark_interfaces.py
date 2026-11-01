@@ -1,7 +1,6 @@
-"""Measure real CLI/MCP workflow payloads against an owned loopback backend.
+"""Count CLI/MCP workflow payload tokens using a synthetic loopback backend.
 
-This is reproducible context accounting, not an autonomous LLM or billing benchmark.
-No external application, model API, credentials, or browser is contacted.
+The report covers serialized definitions, calls, and text results.
 """
 
 from __future__ import annotations
@@ -31,7 +30,7 @@ def compact(value) -> str:
 
 
 def model_definition(tool) -> dict:
-    # A reference model-facing representation, not a promise about any host's wrapper.
+    # Reference serialization of model-facing tool definitions.
     return {"name": tool.name, "description": tool.description, "parameters": tool.input_schema}
 
 
@@ -67,7 +66,7 @@ async def benchmark(output: Path) -> dict:
     manifest_path.write_text(compact(browser_manifest))
     browser_definitions = await create_server(workspace).list_tools()
     manifest_path.write_text(compact(manifest))
-    # Catalog growth must not become model-facing tool-schema growth.
+    # Tool definitions are independent of catalog size.
     expanded = {
         **catalog,
         "operations": catalog["operations"]
@@ -123,7 +122,7 @@ async def benchmark(output: Path) -> dict:
                             payload = response.structured_content
                             text = "\n".join(item.text for item in response.content if item.type == "text")
                             request = {"name": name, "arguments": arguments}
-                            # Text is the compatibility rendering. Hosts may additionally include structuredContent.
+                            # Count text output and optional structuredContent duplication separately.
                             duplicate = tokens(payload)
                         else:
                             operation = arguments.get("operation_id")

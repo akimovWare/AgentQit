@@ -86,7 +86,9 @@ def configured(tmp_path, monkeypatch):
     )
     monkeypatch.setattr("qa_cli.app.product_plugin_for", lambda _: plugin)
     monkeypatch.setattr("qa_cli.app.select_product", lambda _: "sample")
-    monkeypatch.setattr("qa_cli.app._credential_source", lambda *a, **k: pytest.fail("must not fall back to legacy"))
+    monkeypatch.setattr(
+        "qa_cli.app._credential_source", lambda *a, **k: pytest.fail("unexpected credential provider fallback")
+    )
     monkeypatch.setenv("QA_CLI_PROFILES_DIR", str(tmp_path))
     monkeypatch.setenv("QA_CLI_VAULT_EXECUTABLE", str(vault))
     monkeypatch.delenv("QA_CLI_CREDENTIAL_HELPER", raising=False)

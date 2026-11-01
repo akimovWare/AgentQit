@@ -1,8 +1,4 @@
-"""Validate installed wheels from an isolated Python, outside the source checkout.
-
-Only generated .invalid workspaces and an owned synthetic loopback server are used.
-This is a developer acceptance check, not a runtime scenario feature.
-"""
+"""Check installed CLI/MCP entry points, import origins, and synthetic UI/API behavior."""
 
 from __future__ import annotations
 

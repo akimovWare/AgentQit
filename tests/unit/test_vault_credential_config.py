@@ -36,7 +36,7 @@ def test_vault_config_round_trips_aliases_without_accessing_files(tmp_path):
     assert Profile.model_validate({"credentials": document}).credentials == config
 
 
-def test_vault_config_defaults_and_legacy_profile_are_compatible():
+def test_vault_defaults_accept_profile_without_credentials():
     config = VaultCredentialConfig(address="https://vault.sample.invalid")
     assert config.provider == "vault-cli"
     assert config.auth_mode == "session"

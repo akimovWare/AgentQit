@@ -165,7 +165,7 @@
       "type": "string"
     }
   },
-  "description": "Stable public result contract shared by CLI, SDK, CI and future MCP tools.",
+  "description": "Versioned operation result for CLI and MCP.",
   "properties": {
     "command": {
       "title": "Command",

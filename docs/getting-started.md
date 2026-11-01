@@ -71,4 +71,4 @@ Replace `orders.get` and `orderId` with the actual reviewed operation and input.
 local trust files but do not access QA or retrieve credentials.
 
 Live invocation is a separate authorized task. Successful execution returns facts;
-the caller still compares them with the expected behavior.
+the caller compares them with the expected behavior.

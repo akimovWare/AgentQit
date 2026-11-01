@@ -339,7 +339,7 @@ class PlaywrightBrowserAdapter:
 
     async def screenshot(self, page_id: str | None = None) -> tuple[str, bytes]:
         selected, page = self._page(page_id)
-        # Mask all inputs; this is a useful policy, not a claim of complete pixel sanitization.
+        # Mask form controls; pixels outside those controls are not sanitized.
         return selected, await page.screenshot(
             type="png",
             full_page=False,

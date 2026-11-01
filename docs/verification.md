@@ -1,16 +1,37 @@
 # Verification
 
-All automated checks use fake transports, generated local certificates, or owned
-synthetic loopback applications. No private credentials or QA network are required.
+Tests use fake transports, generated test certificates, and owned synthetic
+loopback applications. Application-environment access and real credentials are
+not required.
+
+## Development checks
 
 ```sh
 uv sync --frozen --extra browser
 uv run ruff check src tests tools examples/orders/src
 uv run ruff format --check src tests tools examples/orders/src
 uv run pre-commit run --all-files
+uv run python tools/check_public_content.py
 uv run python tools/export_contracts.py --check
 uv run qa browser install --headless-only
 AGENTQIT_BROWSER_TESTS=1 uv run pytest
+```
+
+Browser tests require explicit provisioning. They cover context isolation,
+stale and changed references, credential input, screenshots, traces, native
+dialogs, and UI/API observations. Orders Lab supplies correct and deliberately
+defective UI behavior. Business assertions belong to the acceptance tests.
+
+The standard suite runs without browser binaries. CI covers Python 3.12/3.13 on
+macOS/Linux, plus Chromium, interface-payload, and publication-content checks.
+See [GitHub Actions](https://github.com/akimovWare/AgentQit/actions/workflows/ci.yml)
+for results on each commit. Windows is unsupported by the POSIX journal/artifact
+implementation. Model reasoning and independent LLM evaluations are outside the
+runtime test suite.
+
+## Package checks
+
+```sh
 uv build
 uv run python tools/verify_wheel.py dist
 uv run python tools/verify_archives.py dist
@@ -18,56 +39,26 @@ uv run twine check --strict dist/*.whl dist/*.tar.gz
 uv build examples/orders
 ```
 
-Provisioning uses public Playwright downloads and is an explicit setup action.
-If a trusted proxy/CA setup is required, configure it for the installed Playwright
-environment; certificate verification must remain enabled.
+Archive checks validate distribution identity, public dependency sources, source
+content, and exclusion of operational files. Schema snapshots and a frozen v1
+consumer workspace cover configuration/result compatibility. Release-gate tests
+cover source/version/tag consistency and stale-archive rejection.
 
-Browser-marked checks are opt-in when binaries are provisioned. They exercise
-context isolation, stale/changed references, password input handling, screenshots,
-traces, and UI/API observations through MCP. The Orders fixture includes correct
-and deliberately defective UI behavior. Business assertions live in acceptance
-tests outside the runtime.
+## Installed application
 
-Build/install validation must run outside the source checkout using a fresh
-environment. `tools/smoke_installed.py` checks package import origins, plain local
-workspace planning, actual stdio communication, and optional independently installed
-Orders/browser behavior. Run it with isolated Python (`-I`) and an unused output
-directory. It creates only synthetic records and retains summaries/artifacts there.
+Use a fresh environment outside the checkout. Run `tools/smoke_installed.py` with
+isolated Python (`-I`) and a new `--output` directory. It verifies package import
+origins, version entry points, schema export, CLI JSON planning, and MCP stdio.
+`--with-example --browser` also exercises the independently installed Orders wheel,
+UI creation, API observation, PNG capture, and trace finalization.
 
-The GitHub workflow covers Python 3.12/3.13 on macOS/Linux and a Linux
-Chromium job. A local check is not evidence that those remote jobs have run; the
-source preview is public. Record the actual tested environment and results.
-Windows is not supported by this version's POSIX journal/artifact implementation.
+CLI parsing checks reuse the installed application; subprocess checks cover entry
+points and stdio. Startup budgets and runtime execution deadlines are separate.
+Synthetic records and artifact summaries remain in the output directory.
 
-There is no external LLM evaluation in the automated suite. It verifies the protocol,
-execution mechanisms, documented interaction path, and known fixture outcomes.
-Independent user/agent evaluation remains valuable before expanding release scope.
+Provisioning uses public package/browser downloads. Configure trusted proxy/CA
+settings through the relevant tool's supported options. Keep TLS verification
+active. Local reports, trust material, credentials, journals, and caches remain
+outside version control and distribution archives.
 
-
-Public CI action references follow the [official uv integration guide](https://docs.astral.sh/uv/guides/integration/github/).
-Package publication is disabled by default in the manual release workflow.
-
-
-Release preparation also checks frozen consumer configuration, schema snapshots,
-version identity, dirty-source/tag rejection, and stale wheel rejection. The
-[release guide](releases.md) separates a local candidate from later remote activation.
-The [interface benchmark](interface-comparison.md) measures actual workflow payloads
-without calling a model API or claiming autonomous reasoning quality.
-
-Installed checks use bounded startup budgets for cold imports. CLI parsing checks
-reuse the installed application in one process; separate subprocess checks verify
-both entry points, a JSON plan, and actual MCP stdio. This is installation coverage,
-not a claim about startup latency. Runtime execution budgets remain independent.
-
-
-## Verified preview capabilities
-
-Local verification covered the complete runtime suite on macOS and Linux with
-provisioned Chromium, plus focused release-gate checks. Fresh wheel and sdist
-installations verified exported schemas, CLI JSON planning, and actual MCP stdio
-without source-path fallback. The independent Orders wheel exercised UI creation,
-API observation, screenshots, and finalized traces through an installed application.
-
-CI results on each commit are the current public evidence. Tests use synthetic
-fixtures only. Local reports, records, journals, trust material, and provisioning
-caches stay outside version control and distribution archives.
+See [interface accounting](interface-comparison.md) and [release checks](releases.md).

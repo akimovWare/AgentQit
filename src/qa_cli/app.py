@@ -310,7 +310,7 @@ def _task_workflow() -> list[dict[str, str]]:
     return [
         {
             "step": "requirements",
-            "instruction": "Read the task and agreed requirements: what behavior is expected and why.",
+            "instruction": "Read the task requirements and expected behavior.",
         },
         {
             "step": "changes",
@@ -518,7 +518,8 @@ def _guide_payload(product_plugin=None, settings: Settings | None = None) -> dic
         ]
         payload["scenarioDiscovery"] = {
             "argv": ["qa", "guide", "<scenario>", *product_args, "--output", "json"],
-            "instruction": "Read relevant business context before acting; choose observations for the task and MR.",
+            "instruction": "Read relevant business context before acting; choose observations "
+            "for the task and affected change.",
         }
     return payload
 
@@ -641,8 +642,7 @@ async def _execute(
         with suppress(Exception):
             await _close_runtime(runtime)
         raise
-    # Persist the known outcome synchronously before the next cancellation point.
-    # A stuck/cancelled cleanup must never turn a completed mutation into pending.
+    # Persist the confirmed outcome before cancellable cleanup.
     result = runtime.redact_result(result)
     if store is not None and attempt is not None:
         evidence_path = store.directory / f"{attempt.attempt_id}.json"
@@ -684,7 +684,7 @@ def _loaded_evidence_scope(
 ) -> EvidenceScope:
     document = profile.model_dump(mode="json", by_alias=True)
     if profile.credentials is None:
-        # Preserve existing journal digests when no Vault configuration was added.
+        # Omit absent credential configuration from the profile digest.
         document.pop("credentials", None)
     return EvidenceScope(
         product=product,
@@ -843,8 +843,7 @@ def config_requirements(
             "profileTemplate": setup_plan.profile.model_dump(mode="json", by_alias=True, exclude_defaults=True),
         }
         if setup_plan.profile.credentials is not None:
-            # `credentials` is intentionally sensitive in the global redactor.
-            # Publish the strict non-secret provider metadata under a separate key.
+            # Expose nonsecret provider metadata separately from credential values.
             payload["profileTemplate"].pop("credentials", None)
             payload["credentialConfiguration"] = setup_plan.profile.credentials.model_dump(
                 mode="json", by_alias=True, exclude_none=True, exclude={"bindings"}

@@ -16,7 +16,7 @@ qa workspace doctor items.list --workspace ./sample-qa
 qa workspace plan items.list --workspace ./sample-qa
 ```
 
-For the unpublished source preview, run `uv sync --frozen` in the checkout and
+For source development, run `uv sync --frozen` in the checkout and
 prefix these commands with `uv run`. A source checkout is a development workflow,
 not a requirement for an installed application.
 
@@ -89,8 +89,8 @@ agentqit-mcp --workspace /absolute/path/to/sample-qa
 Configure the MCP host to launch that executable with those arguments. It speaks
 stdio and keeps protocol stdout clean. An equivalent command is
 `qa mcp --workspace /absolute/path/to/sample-qa`. If the host does not inherit your
-shell's `PATH`, configure the absolute path to the installed executable. For the
-source preview, use the checkout's `.venv/bin/agentqit-mcp` instead.
+shell's `PATH`, configure the absolute path to the installed executable. For source
+development, use the checkout's `.venv/bin/agentqit-mcp` instead.
 
 Tools provide bounded search, operation descriptions, offline plans, a read-only
 observation entry point, and explicit invocation. All return the
@@ -118,5 +118,5 @@ and explicitly provisioned binaries as well as workspace configuration.
 
 Operation declarations are catalog data, not separate MCP tools. The agent searches
 bounded metadata and requests a selected operation's description before planning
-and execution. Adding catalog operations does not grow the initial tool schemas.
+and execution. Adding catalog operations does not grow the tool definitions.
 See [interface comparison](interface-comparison.md) for measured payloads and host limits.

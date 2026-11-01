@@ -49,7 +49,7 @@ class ErrorItem(BaseModel):
 
 
 class CommandResult(BaseModel):
-    """Stable public result contract shared by CLI, SDK, CI and future MCP tools."""
+    """Versioned operation result for CLI and MCP."""
 
     model_config = ConfigDict(populate_by_name=True)
 

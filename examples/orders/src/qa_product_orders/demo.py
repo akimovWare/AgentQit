@@ -1,4 +1,4 @@
-"""Synthetic loopback-only application. This is an example backend, not runtime business logic."""
+"""Synthetic Orders HTTP server bound to loopback."""
 
 from __future__ import annotations
 

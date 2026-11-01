@@ -1,8 +1,8 @@
 # Compatibility policy
 
-This policy starts with AgentQit 0.1.0. A package update and a configuration migration
-are separate actions. AgentQit never rewrites a user's workspace during installation,
-startup, planning, or upgrade.
+Package updates and configuration migrations are separate actions.
+AgentQit preserves workspace files during installation, startup, planning, and
+upgrade.
 
 ## Versioned contracts
 
@@ -12,7 +12,7 @@ startup, planning, or upgrade.
 | Profile | Referenced by a v1 workspace | The reviewed v1 profile fields/defaults follow the same policy |
 | Operation catalog | `apiVersion: qa.runtime/v1` | Existing declarations remain accepted in 0.1.x |
 | CLI/MCP results | `schema_version: "1.0"` | Envelope fields, meanings, exit codes, and uncertain-outcome semantics remain compatible in 0.1.x |
-| Product plugins | `qa.product/v1` and the [documented Python surface](plugin-api.md) | Initially pin the exact tested AgentQit version |
+| Product plugins | `qa.product/v1` and the [documented Python surface](plugin-api.md) | Pin the exact tested AgentQit version |
 | Local session/journal state | Internal | Finish and close tasks before upgrading; active sessions are not portable across versions |
 
 Profile filenames are user choices. `qa.yaml` and the generated `profile.yaml` use
@@ -34,7 +34,7 @@ Use PEP 440 versions: for example `0.1.0`, `0.1.1`, and `0.2.0rc1`.
   Explain the rejection and a safe migration explicitly.
 
 Unknown schema versions and extra configuration fields fail closed. There is no
-implicit downgrade, silent coercion to a future schema, or automatic file migration.
+implicit downgrade, coercion to an unsupported schema, or automatic file migration.
 The profile has no independent version tag; its compatibility is governed by its
 workspace/catalog contract and the package policy above.
 
@@ -69,10 +69,11 @@ restart the host. Use `qa --version` or `agentqit-mcp --version` to identify the
 
 For an incompatible change, migration instructions must identify changed fields,
 provide before/after YAML, describe the offline validation command, and explain
-rollback. A future migration command must write a new file or require an explicit
-opt-in and backup. No migration command is needed for the initial v1 release.
+rollback. Migration tools must write a new file or require explicit opt-in and a backup.
+The v1 schema has no migration command.
 
-The recommended initial installation constrains `>=0.1,<0.2`, so normal upgrades
-stay within the 0.1.x promise. Change that constraint explicitly to adopt a new
-minor series after reading its migration notes. CI should pin a reviewed application version. Plugins keep exact runtime pins until
-an explicitly tested compatible range is published. See [installation and updates](distribution.md).
+The package-index installation range is `>=0.1,<0.2`, so normal upgrades
+stay within 0.1.x compatibility. Change that constraint explicitly to adopt a new
+minor series after reading its migration notes. CI should pin a reviewed version.
+Plugins use exact runtime pins or an explicitly tested compatible range. See
+[installation and updates](distribution.md).

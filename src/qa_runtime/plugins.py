@@ -15,7 +15,7 @@ def installed_product_ids() -> list[str]:
 
 
 def select_product(product: str | None) -> str:
-    """Use an explicit selection or the only installed product; never prefer a brand."""
+    """Resolve an explicit product or the single installed product."""
     if product:
         return product
     available = installed_product_ids()

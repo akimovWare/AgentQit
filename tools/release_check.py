@@ -1,4 +1,4 @@
-"""Verify a clean local release candidate and write checksums. Never upload anything."""
+"""Verify release source and archive identity, then write a checksum manifest."""
 
 from __future__ import annotations
 
@@ -31,7 +31,7 @@ def validate_source(source: Path, version: str, *, require_tag: bool) -> dict:
         raise ValueError("Requested version differs from pyproject.toml")
     changelog = (source / "CHANGELOG.md").read_text()
     if f"## {version} - " not in changelog:
-        raise ValueError("The candidate needs a matching changelog entry")
+        raise ValueError("The version requires a matching changelog entry")
     if git(source, "status", "--porcelain", "--untracked-files=normal"):
         raise ValueError("Commit all intended changes before preparing a release")
     revision = git(source, "rev-parse", "HEAD")

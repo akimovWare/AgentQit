@@ -10,7 +10,7 @@
 - Shared UI/backend journals, expiry/session/operation limits, and uncertain-outcome handling.
 - Explicit environment credentials and standard Bearer/API-key header composition.
 - Synthetic Orders UI/API, a separate plugin distribution, and deliberate frontend fault acceptance.
-- English agent/contributor guides, prepared CI, archive inspection, and isolated install checks.
+- Agent/contributor guides, CI, archive inspection, and isolated install checks.
 - Workspace-aware MCP discovery: backend task/evidence tools remain available;
   browser-only tools appear only when browser capabilities are configured.
 - Installed-version commands, workspace schema export, frozen v1 consumer checks,
@@ -18,6 +18,3 @@
 - Reproducible CLI/MCP context accounting against synthetic local backend workflows.
 - Manual release preparation, source/tag/version checks, retained artifact hashes,
   strict package metadata validation, and disabled-by-default Trusted Publishing.
-
-Source preview available on GitHub. Package publication remains disabled; see
-verification for platform evidence and browser/security boundaries.

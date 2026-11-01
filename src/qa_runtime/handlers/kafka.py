@@ -343,8 +343,7 @@ class KafkaConsumeOperationHandler:
         }
         consumed = await self._kafka.consume(request)
         if not isinstance(consumed, KafkaConsumeResult):
-            # Legacy/fake ports can return a list; enforce the same observation
-            # budget before exposing its records through the native handler.
+            # Apply the observation budget to record lists returned by injected ports.
             retained: list[KafkaRecord] = []
             size_bytes = 0
             reason = None

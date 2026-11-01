@@ -1,4 +1,4 @@
-"""Create an independent product distribution without inventing any capabilities."""
+"""Generate a product package with catalog, schemas, and offline tests."""
 
 from __future__ import annotations
 
@@ -152,7 +152,7 @@ version = "0.1.0"
 description = "QA capabilities for {product_id}"
 readme = "README.md"
 requires-python = ">=3.12"
-# Pin the runtime distribution that supplied the qa command used to create this package.
+# Compatible runtime version.
 dependencies = [{json.dumps(runtime_requirement)}]
 
 [project.entry-points."qa_runtime.products"]
@@ -200,11 +200,11 @@ def product_guides() -> tuple[ProductGuide, ...]:
         ".gitignore": ".venv/\n__pycache__/\n.pytest_cache/\ndist/\n*.egg-info/\n.env\n/profiles/\n",
         "README.md": f"""# {distribution}
 
-Product capabilities for `{product_id}`. The catalog is initially empty; read
-AGENTS.md and the canonical contracts before adding operations.
+Product capabilities for `{product_id}`. Define reviewed operations in
+`{source}/operations/registry.yaml` using AGENTS.md and canonical contracts.
 
-The scaffold pins the installed distribution providing the `qa` command. Keep the
-runtime dependency and generated schema snapshot aligned when upgrading.
+Runtime dependency: `{runtime_requirement}`. Keep the dependency and schema
+snapshot aligned when upgrading.
 
 From the runtime checkout, install this plugin into the same environment:
 

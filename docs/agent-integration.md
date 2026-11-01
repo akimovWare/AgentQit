@@ -2,9 +2,9 @@
 
 Give this guide to any coding agent together with an installed AgentQit application
 and its documentation. It uses ordinary CLI commands and files; no agent vendor or
-paid integration is required. The runtime checkout is optional for development. Onboarding
-requires an agent with filesystem/terminal access; an execution-only MCP client
-needs an operator-prepared workspace.
+paid integration is required. The runtime checkout is optional for development.
+Onboarding requires an agent with filesystem/terminal access; an execution-only MCP client
+needs a configured workspace.
 
 ## Inputs the agent needs
 
@@ -14,8 +14,8 @@ needs an operator-prepared workspace.
 | Canonical HTTP/AsyncAPI/protobuf contracts and revisions | Establish wire names and schemas |
 | Service repositories and revisions | Trace implementation and side effects |
 | Migrations or schema-only database fixtures, if needed | Define database observations |
-| First capability to implement | Bound the initial integration |
-| Target environment and allowed actions | Bound any later live execution |
+| First capability to implement | Bound the integration |
+| Target environment and allowed actions | Bound live execution |
 
 Missing contracts, unknown revisions, and unclear ID mappings are explicit gaps.
 The agent should complete independent offline work while asking for missing facts.
@@ -66,7 +66,7 @@ separate declaration for every button.
 1. Map the requirement to effects and observable evidence. Record source revisions.
 2. Create a local workspace first. If custom composition or independent distribution
    is required, use `qa product init`, install into the same environment, and retain
-   the generated runtime version pin initially.
+   the runtime version pin.
 3. Add one operation in YAML. Specify purpose, parameter types and limits,
    `mutating`, admission, and exact bindings. Keep unverified declarations at
    `admission: prototype`; never manufacture verified provenance metadata.
@@ -99,7 +99,7 @@ separate declaration for every button.
 - No real credentials, trust material, customer records, or private evidence appear
   in the reusable runtime or public example. A private plugin's data remains private.
 
-## Using the plugin for a later QA task
+## Execute a QA task
 
 Read requirements and affected changes; discover operations with `registry` and
 `guide`; record expectations; run `doctor` without `--network` and `plan`; then
