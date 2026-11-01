@@ -68,9 +68,9 @@ def test_v1_workspace_plans_without_credentials_or_rewriting_files(tmp_path, mon
     }
 
 
-@pytest.mark.parametrize("change", ["future-version", "unknown-field"])
+@pytest.mark.parametrize("change", ["unsupported-version", "unknown-field"])
 def test_unknown_workspace_schema_is_rejected_without_migration(tmp_path, change):
-    manifest = {"apiVersion": "agentqit/v2" if change == "future-version" else "agentqit/v1", "name": "sample"}
+    manifest = {"apiVersion": "agentqit/v2" if change == "unsupported-version" else "agentqit/v1", "name": "sample"}
     if change == "unknown-field":
         manifest["misspelledOption"] = True
     path = tmp_path / "agentqit.yaml"

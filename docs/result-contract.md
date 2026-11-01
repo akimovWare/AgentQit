@@ -47,7 +47,7 @@ Unexpected exceptions are normalized without exposing arbitrary exception text.
 Unknown mutation outcomes are not automatically retryable. A durable pending
 journal record is also not proof that repeating an action is safe.
 
-Mutation admission happens before I/O. Existing operations require explicit
+Mutation admission happens before I/O. Mutating operations require explicit
 `--allow-mutation` and exact `environment: qa`; catalog admission labels remain
 discovery metadata rather than an independent authorization system.
 
@@ -75,13 +75,13 @@ redacted or incomplete observation may not support the desired conclusion.
 
 ## Browser and task evidence
 
-The result envelope stays version 1.0. Browser observations carry session-scoped
+The result envelope version is 1.0. Browser observations carry session-scoped
 page/snapshot/element references, bounded text, truncation markers, diagnostics,
 and `content_trust: untrusted`. Navigation, click, fill, and select are mutating;
 observe and screenshot are read-only capabilities. A successful action acknowledgment
 is not a claim about backend effects.
 
-Session IDs identify persistent task state; `run_id` remains per operation. The
+Session IDs identify task state; `run_id` identifies an individual operation. The
 execution context carries the optional task session without adding transport logic
 to the engine. Backend/browser calls using that session share a durable journal;
 returned `evidence` contains retained record paths. Cancellation can leave a pending
@@ -93,6 +93,6 @@ Screenshots return metadata; MCP can additionally attach a bounded PNG content b
 Session traces are local sensitive archives and may lack a single originating run.
 JSON redaction does not sanitize arbitrary pixels or trace archives.
 
-Closed/expired sessions and stale targets are explicit errors. The owner never silently
+Closed/expired sessions and stale targets return explicit errors. The session manager never silently
 recreates browser state and repeats the previous action. Cleanup failures are warnings
 and can make session closure partial without replacing earlier business observations.

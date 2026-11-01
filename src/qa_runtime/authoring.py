@@ -1,4 +1,4 @@
-"""Offline authoring aids; semantic execution plans still belong to CatalogCompiler."""
+"""Offline registry authoring and validation."""
 
 from __future__ import annotations
 
@@ -80,11 +80,10 @@ def _parameters(
 
 
 def validate_product_authoring(plugin: ProductPlugin) -> OperationRegistry:
-    """Apply the new-product scaffold's opt-in policy without a profile or I/O.
+    """Validate product metadata and bindings without a profile or transport I/O.
 
-    This deliberately does not change admission or validation of existing packages.
-    Verified provenance means metadata is present; authors must verify its source.
-    Custom handler configs are checked by the product's compilation tests.
+    Contract metadata identifies declared sources; authors verify their correctness.
+    Product compilation tests validate custom handler configuration.
     """
     registry = OperationRegistry.load(plugin.registry_path)
     issues: list[str] = []

@@ -6,7 +6,7 @@ from qa_runtime.security import SecretValue
 
 
 class InMemoryCredentialSource:
-    """Test/bootstrap source. Normal execution uses an explicitly configured external credential source."""
+    """In-memory credential source for tests and explicit runtime composition."""
 
     def __init__(self, values: dict[str, str]) -> None:
         self._values = {reference: SecretValue(value) for reference, value in values.items()}

@@ -1,11 +1,11 @@
 # Agent instructions
 
-## Current stage
+## Project
 
 AgentQit is a public source preview. Read [the roadmap](docs/roadmap.md),
 [compatibility](docs/compatibility.md), and [the release guide](docs/releases.md) before changing code.
-Distinguish verified capabilities from planned work. Package publication requires
-an explicit maintainer instruction; keep it disabled during source-only changes.
+Package publication requires an explicit maintainer instruction. Source changes
+use pull requests and the required CI checks.
 
 ## Architecture
 
@@ -58,13 +58,12 @@ an explicit maintainer instruction; keep it disabled during source-only changes.
 - Start with focused tests, then run lint, format, and the full offline suite.
   Packaging changes also require a build, archive inspection, and installation
   checks outside the checkout.
-- Do not claim completion without the corresponding evidence. Report blockers
-  and unsupported cases explicitly.
+- Include relevant validation results and supported scope with each change.
 
 For a downstream plugin, follow [the integration workflow](docs/agent-integration.md).
 
 
 Browser-marked acceptance uses owned synthetic loopback fixtures and provisioned
 binaries. Run `AGENTQIT_BROWSER_TESTS=1 uv run pytest` after explicit browser setup.
-The standard suite stays useful without browser binaries. Do not claim remote CI,
-Windows support, or an autonomous LLM evaluation from local protocol tests.
+The standard suite runs without browser binaries. Supported platforms and test
+scope are documented in [verification](docs/verification.md).

@@ -9,9 +9,9 @@ from typing import Any
 
 from typer.core import TyperGroup
 
-try:  # Typer 0.26+ vendors Click; older supported versions use the standalone package.
+try:  # Use Typer's vendored Click when available.
     from typer import _click as click
-except ImportError:  # pragma: no cover - compatibility with older Typer installations
+except ImportError:  # pragma: no cover - standalone Click import
     import click
 
 from qa_cli.renderers import render
@@ -32,8 +32,7 @@ def _requested_output(args: Sequence[str]) -> str:
 
 
 def _usage_error(error: click.exceptions.ClickException) -> ErrorItem:
-    # Click's formatted messages can contain arbitrary argument values. Keep values out
-    # of public errors; parameter declarations and command help are sufficient to repair syntax.
+    # Public parser errors include parameter names and help, excluding input values.
     details: dict[str, Any] = {}
     if isinstance(error, click.exceptions.MissingParameter):
         code = "MISSING_ARGUMENT"

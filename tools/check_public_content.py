@@ -1,8 +1,6 @@
-"""Check a tracked source snapshot for local identity and operational data.
+"""Check tracked source for identifying information and operational data.
 
-An optional local denylist can supplement generic checks. Its values and source
-path are never included in output. This check does not replace a secret scanner
-or a maintainer's review of code, assets, and the history selected for publication.
+Optional local denylists supplement the built-in checks. Matched values are redacted.
 """
 
 from __future__ import annotations

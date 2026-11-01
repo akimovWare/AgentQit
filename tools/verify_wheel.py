@@ -77,7 +77,7 @@ def _git_inventory(source_root: Path, packages: dict[str, Path]) -> set[Path] | 
             continue
         path = source_root / name
         if not path.is_file():
-            # A tracked deletion is part of the working tree even before commit.
+            # Exclude missing paths from the Git index.
             continue
         for package_name, package in packages.items():
             if path.is_relative_to(package):
@@ -138,7 +138,7 @@ def _inspect_extracted(extracted: Path, source_root: Path) -> None:
     if len(installed) != len(entries) or installed != declared:
         raise VerificationError("wheel product entry points differ from source project metadata")
 
-    # Check even a runtime-only wheel, which legitimately has no product entry point.
+    # Runtime-only wheels have no product entry points.
     for name in packages:
         importlib.import_module(name)
     for entry in entries:
@@ -166,7 +166,7 @@ def _inspect_extracted(extracted: Path, source_root: Path) -> None:
             if plugin.setup.profile_template.read_bytes() != source_template.read_bytes():
                 raise VerificationError(f"installed setup template differs from source: {entry.name}")
 
-    # An editable installation must never conceal an omitted wheel module.
+    # All package modules must resolve inside the extracted wheel.
     for name, module in tuple(sys.modules.items()):
         if name.partition(".")[0] not in packages:
             continue

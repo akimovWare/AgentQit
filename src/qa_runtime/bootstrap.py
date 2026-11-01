@@ -106,7 +106,7 @@ def scope_profile(
             if service.auth_ref is not None:
                 auth = setup.auth.get(service.auth_ref)
                 if auth is None:
-                    # Preserve legacy plugins whose auth dependencies are undocumented.
+                    # Keep all endpoints when an auth provider has no dependency metadata.
                     return scoped
                 refs["endpoints"].update(auth.endpoint_refs)
         scoped.endpoints = {name: value for name, value in scoped.endpoints.items() if name in refs["endpoints"]}

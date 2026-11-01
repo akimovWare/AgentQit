@@ -39,9 +39,8 @@ Configure your MCP host to launch the checkout's `.venv/bin/agentqit-mcp` with:
 
 This default is read-only. For a task explicitly authorizing synthetic writes in
 this local demo, the operator may additionally enable the server's mutation flag.
-The agent still opts in per action. The provided `environment: qa` is the existing
-runtime gate for this synthetic target; it does not assert that a remote QA system
-is being used.
+Each mutating call also requires caller opt-in and `environment: qa`. The fixture
+is a loopback service with synthetic data.
 
 Example task for an agent:
 
@@ -65,9 +64,8 @@ auth state or unreviewed traces/screenshots.
 ## Deliberate frontend defect
 
 Restart the demo with `--defect-ui` to display stale CREATED status after a
-successful backend cancellation. The requirement remains CANCELLED in both UI
-and API. An agent should identify the discrepancy from independent observations.
-This mode demonstrates a test subject defect, not a runtime failure.
+successful backend cancellation. The expected status is CANCELLED in both UI
+and API. Compare their observations to identify the discrepancy.
 
 ## Independent plugin package
 

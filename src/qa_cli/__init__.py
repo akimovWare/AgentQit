@@ -1,1 +1,1 @@
-"""Thin Typer interface for qa-runtime."""
+"""Typer CLI for AgentQit."""

@@ -1,4 +1,4 @@
-"""Reusable QA runtime, independent from product packages."""
+"""QA operation runtime."""
 
 from qa_runtime.engine import QaRuntime
 

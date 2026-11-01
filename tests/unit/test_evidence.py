@@ -102,7 +102,7 @@ os._exit(23)
         [sys.executable, "-c", script, str(tmp_path), _scope().model_dump_json()],
         capture_output=True,
         check=False,
-        # Verify crash durability independently of interpreter/import startup cost.
+        # Start the crash deadline after the child signals readiness.
         timeout=60,
     )
     assert process.returncode == 23, process.stderr

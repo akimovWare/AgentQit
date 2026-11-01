@@ -1,10 +1,10 @@
 # Plugin API and compatibility
 
-The distribution is `agentqit`; the command remains `qa`, and runtime imports remain
+The distribution is `agentqit`; the CLI command is `qa`, and runtime imports use
 `qa_runtime`. Product packages register in `qa_runtime.products` and return a
 `ProductPlugin` with API version `qa.product/v1`.
 
-The initial supported extension surface is:
+The supported extension surface is:
 
 - `qa_runtime.ports.product`: plugin, guide, setup, components, prerequisites, and
   declared resource/auth dependencies.
@@ -17,11 +17,11 @@ The initial supported extension surface is:
 Internal CLI functions, MCP implementation classes, concrete session storage internals,
 and private underscore-prefixed methods are not an embedding SDK contract.
 
-This is a 0.1 pre-release. Scaffolds and the bundled example pin the runtime version
-that supplies `qa`. Keep the dependency, schema snapshot, and integration tests aligned.
-See [the compatibility policy](compatibility.md). Compatible plugin dependency ranges
-will be introduced only after testing those ranges;
-the plugin API tag by itself is not proof that every internal Python import is stable.
+Plugin packages and the Orders example pin the runtime version that supplies `qa`.
+Keep the dependency, schema snapshot, and integration tests aligned. Publish a
+compatible dependency range only after testing it. The plugin API tag does not
+extend compatibility guarantees to internal Python modules. See
+[compatibility](compatibility.md).
 
 Local workspaces need no installed product package. An optional workspace `product`
 loads an installed plugin's composition, catalog, and guides; local header auth must
@@ -30,7 +30,7 @@ when browser settings are configured.
 
 `ResourceBinding(section="none", config_field="")` declares a handler whose resources
 are task-owned rather than selected from profile services/clusters. Its explicit auth
-dependencies still participate in onboarding. Unknown custom bindings do not gain
+dependencies participate in onboarding. Unknown custom bindings do not gain
 implicit access to new profile fields.
 
 `InputRedactor.redact_input(plan, params)` can supply a safe input representation

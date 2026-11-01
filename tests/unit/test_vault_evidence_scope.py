@@ -19,7 +19,7 @@ def _registry():
     )
 
 
-def test_existing_legacy_manifest_retains_its_profile_digest_after_upgrade(tmp_path):
+def test_manifest_digest_matches_profile_without_credentials(tmp_path):
     profile = Profile.model_validate(
         {
             "environment": "qa",
@@ -27,17 +27,17 @@ def test_existing_legacy_manifest_retains_its_profile_digest_after_upgrade(tmp_p
             "defaults": {"optional-value": None},
         }
     )
-    old_document = profile.model_dump(mode="json", by_alias=True)
-    del old_document["credentials"]
-    assert old_document["services"]["sample"]["authRef"] is None
-    assert old_document["defaults"]["optional-value"] is None
+    profile_document = profile.model_dump(mode="json", by_alias=True)
+    del profile_document["credentials"]
+    assert profile_document["services"]["sample"]["authRef"] is None
+    assert profile_document["defaults"]["optional-value"] is None
     saved_scope = EvidenceScope(
         product="sample",
         profile="qa",
-        profile_digest=content_digest(old_document),
+        profile_digest=content_digest(profile_document),
         registry_digest=content_digest([]),
     )
-    store = RunStore(tmp_path / "legacy-run")
+    store = RunStore(tmp_path / "sample-run")
     manifest = store.initialize(saved_scope)
 
     current_scope = _loaded_evidence_scope("sample", "qa", profile, _registry())
