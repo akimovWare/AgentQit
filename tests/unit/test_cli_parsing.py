@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 
 import pytest
+from rich.text import Text
 from typer.testing import CliRunner
 
 from qa_cli.app import app
@@ -65,9 +66,20 @@ def test_explicit_human_output_overrides_json_environment() -> None:
     assert "[success] guide" in result.stdout
 
 
-def test_explicit_help_stays_human_even_with_invalid_output_environment() -> None:
-    result = CliRunner().invoke(app, ["invoke", "--help"], env={"QA_CLI_OUTPUT": "invalid"})
+@pytest.mark.parametrize("colored", [False, True], ids=["plain", "colored"])
+def test_explicit_help_stays_human_even_with_invalid_output_environment(colored: bool) -> None:
+    result = CliRunner().invoke(
+        app,
+        ["invoke", "--help"],
+        env={
+            "QA_CLI_OUTPUT": "invalid",
+            "FORCE_COLOR": "1" if colored else None,
+            "NO_COLOR": None if colored else "1",
+            "TERM": "xterm-256color" if colored else "dumb",
+        },
+    )
 
     assert result.exit_code == 0
-    assert "Usage:" in result.stdout
-    assert "--input-json" in result.stdout
+    help_text = Text.from_ansi(result.stdout).plain
+    assert "Usage:" in help_text
+    assert "--input-json" in help_text
