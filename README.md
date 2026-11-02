@@ -2,43 +2,101 @@
 
 [![Validate](https://github.com/akimovWare/AgentQit/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/akimovWare/AgentQit/actions/workflows/ci.yml)
 
-Application testing with AI agents.
-
-AgentQit exposes typed browser actions and reviewed backend operations through CLI
-and local MCP. The agent selects checks from requirements; the runtime validates
-inputs, enforces execution limits, and returns observations with evidence.
-UI, API, database, and messaging observations can share a task journal.
+Give your AI agent tools to test a UI and follow the same action through APIs,
+databases, messages, object storage, and Kubernetes observations. Configure your
+project in YAML; the agent chooses checks and compares evidence with requirements.
 
 CPython 3.12, 3.13, and 3.14; macOS and Linux.
 
-## Install
+## What your agent can do
 
-With uv installed:
+Available after configuring your workspace and access:
+
+| Integration | What the agent can do |
+| --- | --- |
+| Browser · Playwright via MCP | Navigate pages, fill forms, click/select controls, inspect page state, capture screenshots and traces |
+| HTTP APIs | Call declared endpoints with typed inputs and inspect responses |
+| PostgreSQL | Run reviewed, bounded queries to inspect records and state |
+| Kafka | Publish test messages, observe events, and capture partition-offset checkpoints |
+| S3 | List buckets/objects, inspect, upload, copy, and delete objects |
+| Kubernetes | Inspect deployments, list pods, and read deployment logs |
+
+The agent can search the catalog, inspect parameter schemas, and validate plans
+offline. Local OpenAPI imports create read-only operation drafts for review.
+Built-in HTTP auth supports Bearer and API-key headers, with credentials from
+environment variables or Vault.
+
+Combine UI and backend observations in one task journal. For example: submit a
+form, find the resulting record through an API, and inspect its database state or
+emitted event. You supply expected behavior and authorize the execution scope.
+
+## Fast track
+
+### 1. Install the application
+
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/) once, then
+download and install AgentQit from PyPI:
 
 ```sh
-uv tool install --python 3.12 'agentqit[browser]>=0.1,<0.2'
+uv tool install --python 3.14 'agentqit[browser]>=0.1,<0.2'
 qa browser install --headless-only
 qa workspace init --directory ./my-qa --name sample
 ```
 
-For backend-only use, omit `[browser]` and the browser provisioning command.
-For a reproducible installation, pin a reviewed version such as `==0.1.0`.
+For backend-only use, omit `[browser]` and browser provisioning. Choose a new
+directory for `workspace init`. The generated workspace contains sample YAML;
+the next step connects it to your application.
 
-The workspace contains your operation YAML, profile, and credential references.
-Configure reviewed operations, QA endpoints, and an explicit credential provider
-using the [workspace guide](docs/workspaces.md). Ordinary integrations require
-no Python code or runtime checkout; reusable catalogs and custom composition can
-use independent product plugins.
+### 2. Give your agent this setup task
 
-Configure your MCP host to launch:
+Use a coding agent with terminal and filesystem access. Copy this message:
+
+```text
+Read https://github.com/akimovWare/AgentQit/blob/main/docs/agent-integration.md
+and follow its linked workspace and browser guides.
+
+Set up AgentQit for this project in ./my-qa using the installed qa command.
+Use the initialized workspace. Ask me for missing requirements, the first check,
+contract/source locations, QA endpoints, my agent host, and credential references.
+Configure the workspace YAML and prepare my CLI/MCP connection.
+Validate offline, report gaps, and show the first check ready to run.
+Request an authorized execution scope before making live calls.
+```
+
+The agent asks for missing details and maintains `agentqit.yaml`, your profile
+(`profile.yaml` or `qa.yaml`), and `operations/*.yaml`. Supply secret values through
+your environment or Vault; give the agent credential references.
+
+Backend operations work through CLI or local stdio MCP. Interactive browser
+control uses MCP; have the agent configure your host to launch:
 
 ```sh
 agentqit-mcp --workspace /absolute/path/to/my-qa
 ```
 
-Interactive browser sessions use MCP. CLI commands provide backend execution,
-discovery, planning, diagnostics, and configuration. See
-[installation and updates](docs/distribution.md) for package sources and upgrades.
+An execution-only MCP client needs this setup completed first. See the
+[agent integration guide](docs/agent-integration.md) for the full workflow.
+
+### 3. Ask for checks and keep operations current
+
+Give the agent a task and its expected behavior, for example:
+
+> Verify this checkout change against these requirements and show the UI/API evidence.
+
+Add or update operation steps through the same agent:
+
+> Update the operation YAML in ./my-qa from this API contract. Show the changed
+> inputs and effects, the YAML diff, and offline validation results.
+
+These are workspace changes. Finish active sessions and restart MCP after
+updating its workspace. New catalog operations use the same CLI/MCP entry points.
+The [integration guide](docs/agent-integration.md#maintain-an-integration) covers
+catalog updates and validation.
+
+Update the application with `uv tool upgrade agentqit`. Finish tasks and stop MCP
+before upgrading, then restart it; provision browser binaries again if Playwright
+changed. See [installation and updates](docs/distribution.md) for version pins,
+plugins, and rollback.
 
 ## Try Orders Lab
 
@@ -57,14 +115,7 @@ Open `http://127.0.0.1:8765`. Point your MCP host at the checkout's
 Follow the [Orders guide](examples/orders/README.md) for mutation authorization,
 expected behavior, and the deliberate frontend defect.
 
-## Capabilities
-
-- HTTP, PostgreSQL, Kafka, S3, and Kubernetes operations declared in YAML.
-- Bounded catalog search, typed input descriptions, and offline planning.
-- Interactive browser navigation, page observations, scoped element actions, and screenshots.
-- Isolated browser contexts, shared evidence journals, and private PNG/trace artifacts.
-- Explicit credential sources, recursive JSON redaction, TLS validation, and mutation admission.
-- Local workspaces and installable product plugins.
+## Execution and evidence
 
 A completed operation is an execution fact. The agent compares observations with
 requirements to assess business behavior. Unknown write outcomes require state
