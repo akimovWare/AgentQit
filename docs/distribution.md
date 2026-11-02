@@ -5,7 +5,27 @@ and shared runtime. Configuration lives in a separate workspace containing YAML
 catalogs, a profile, and credential references. Ordinary integrations require no
 Python code or runtime checkout.
 
-The source is available on GitHub. The PyPI package is not published.
+Supported interpreters are standard CPython 3.12, 3.13, and 3.14 on macOS and Linux.
+The commands below select Python 3.12; use `--python 3.13` or `--python 3.14` to
+select another supported version.
+
+## Install from PyPI
+
+With uv installed:
+
+```sh
+uv tool install --python 3.12 'agentqit[browser]>=0.1,<0.2'
+qa browser install --headless-only
+qa workspace init --directory ./my-service-qa --name my-service
+```
+
+For backend-only use, select `'agentqit>=0.1,<0.2'` and omit browser provisioning.
+The version range accepts compatible 0.1.x updates. Adopt a new minor series
+after reading its migration notes. CI integrations should pin a reviewed version.
+
+uv installs executables on `PATH` and isolates dependencies from other projects.
+`uv tool update-shell` adds its executable directory when needed. See
+[uv tools](https://docs.astral.sh/uv/guides/tools/).
 
 ## Install from Git
 
@@ -18,9 +38,7 @@ qa workspace init --directory ./my-service-qa --name my-service
 ```
 
 For backend-only use, omit `[browser]` and browser provisioning. Use a commit SHA
-instead of `main` to pin a source revision. uv installs executables on `PATH` and
-isolates dependencies from other projects. `uv tool update-shell` adds its executable
-directory when needed. See [uv tools](https://docs.astral.sh/uv/guides/tools/).
+instead of `main` to pin a source revision.
 
 ## Install a built wheel
 
@@ -74,16 +92,7 @@ qa browser install --headless-only
 See [Playwright browser versions](https://playwright.dev/python/docs/browsers).
 There is no background auto-updater or update-notification service.
 
-## Package-index releases
-
-Index commands require a published package. The compatible 0.1 series uses:
-
-```sh
-uv tool install --python 3.12 'agentqit[browser]>=0.1,<0.2'
-```
-
-For backend-only use, select `'agentqit>=0.1,<0.2'`. Adopt a new minor series after
-reading its migration notes. CI integrations should pin a reviewed version.
+## Pinning and rollback
 
 To select or roll back to a specific published version:
 

@@ -6,21 +6,20 @@ AgentQit exposes typed browser actions, reviewed backend operations, and observa
 with evidence. The agent selects checks from requirements and compares the returned
 facts with expected behavior. CLI and local stdio MCP share one execution runtime.
 
-**Availability:** source preview on GitHub. The PyPI package is not published.
-Python 3.12+, macOS and Linux.
+CPython 3.12, 3.13, and 3.14; macOS and Linux.
 
-## Install from Git
+## Install
 
 With uv installed:
 
 ```sh
-uv tool install --python 3.12 'agentqit[browser] @ git+https://github.com/akimovWare/AgentQit.git@main'
+uv tool install --python 3.12 'agentqit[browser]>=0.1,<0.2'
 qa browser install --headless-only
 qa workspace init --directory ./my-qa --name sample
 ```
 
-For backend-only use, omit `[browser]` and browser provisioning. Pin a commit for
-a repeatable source installation.
+For backend-only use, omit `[browser]` and browser provisioning. Pin a reviewed
+version such as `==0.1.0` for a reproducible installation.
 
 Configure the workspace with reviewed operation YAML, your QA endpoints, and
 explicit credential references. Ordinary integrations use YAML; reusable catalogs

@@ -9,7 +9,13 @@ description = "Application testing tools for AI agents"
 readme = "README.pypi.md"
 license = "MIT"
 requires-python = ">=3.12"
-classifiers = ["Operating System :: POSIX", "Programming Language :: Python :: 3.12", "Programming Language :: Python :: 3.13"]
+classifiers = [
+    "Operating System :: POSIX",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+]
 dependencies = [
     "aiokafka>=0.12,<1",
     "anyio>=4.8,<5",
@@ -44,7 +50,7 @@ agentqit-mcp = "qa_mcp.__main__:main"
 dev = [
     "packaging>=24,<27",
     "pre-commit>=4.6,<5",
-    "pytest>=8.3,<9",
+    "pytest>=9.0.3,<10",
     "pytest-cov>=7.1,<8",
     "ruff>=0.9,<1",
     "tiktoken>=0.12,<1",

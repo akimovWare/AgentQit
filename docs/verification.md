@@ -22,8 +22,9 @@ stale and changed references, credential input, screenshots, traces, native
 dialogs, and UI/API observations. Orders Lab supplies correct and deliberately
 defective UI behavior. Business assertions belong to the acceptance tests.
 
-The standard suite runs without browser binaries. CI covers Python 3.12/3.13 on
-macOS/Linux, plus Chromium, interface-payload, and publication-content checks.
+The standard suite runs without browser binaries. CI covers CPython 3.12, 3.13,
+and 3.14 on macOS/Linux, plus Chromium on all three Python versions on Linux.
+Interface-payload and publication-content checks run separately.
 See [GitHub Actions](https://github.com/akimovWare/AgentQit/actions/workflows/ci.yml)
 for results on each commit. Windows is unsupported by the POSIX journal/artifact
 implementation. Model reasoning and independent LLM evaluations are outside the

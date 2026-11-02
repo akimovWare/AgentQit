@@ -9,21 +9,20 @@ and local MCP. The agent selects checks from requirements; the runtime validates
 inputs, enforces execution limits, and returns observations with evidence.
 UI, API, database, and messaging observations can share a task journal.
 
-**Availability:** source preview on GitHub. The PyPI package is not published.
-Python 3.12+, macOS and Linux.
+CPython 3.12, 3.13, and 3.14; macOS and Linux.
 
 ## Install
 
 With uv installed:
 
 ```sh
-uv tool install --python 3.12 'agentqit[browser] @ git+https://github.com/akimovWare/AgentQit.git@main'
+uv tool install --python 3.12 'agentqit[browser]>=0.1,<0.2'
 qa browser install --headless-only
 qa workspace init --directory ./my-qa --name sample
 ```
 
 For backend-only use, omit `[browser]` and the browser provisioning command.
-Pin a commit instead of `main` for a repeatable source installation.
+For a reproducible installation, pin a reviewed version such as `==0.1.0`.
 
 The workspace contains your operation YAML, profile, and credential references.
 Configure reviewed operations, QA endpoints, and an explicit credential provider
