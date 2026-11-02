@@ -4,6 +4,14 @@ Package updates and configuration migrations are separate actions.
 AgentQit preserves workspace files during installation, startup, planning, and
 upgrade.
 
+## Python and platforms
+
+Supported interpreters are standard CPython 3.12, 3.13, and 3.14 on macOS and
+Linux. CI validates the offline suite, package build, and isolated installation
+on both platforms for each version. Chromium acceptance runs on Linux for all
+three versions. Free-threaded Python, PyPy, and Windows are outside the tested
+support matrix. See [verification](verification.md).
+
 ## Versioned contracts
 
 | Surface | Current contract | Promise |

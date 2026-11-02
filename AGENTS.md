@@ -2,7 +2,7 @@
 
 ## Project
 
-AgentQit is a public source preview. Read [the roadmap](docs/roadmap.md),
+AgentQit provides application testing tools for AI agents. Read [the roadmap](docs/roadmap.md),
 [compatibility](docs/compatibility.md), and [the release guide](docs/releases.md) before changing code.
 Package publication requires an explicit maintainer instruction. Source changes
 use pull requests and the required CI checks.

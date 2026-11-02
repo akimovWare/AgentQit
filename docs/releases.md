@@ -31,6 +31,20 @@ page. Keep their installation instructions and availability accurate. The index
 page uses absolute documentation URLs. Verify that its rendered Markdown and the
 built wheel description match. Include both files in the sdist.
 
+## One-time PyPI setup
+
+Sign in to a personal PyPI account, verify its email address, and enable two-factor
+authentication. Under [account publishing](https://pypi.org/manage/account/publishing/),
+add a pending GitHub publisher using the exact values in the table above. The
+workflow field is the filename `release.yml`, not its path or display name.
+
+The first successful upload creates the `agentqit` project under that account
+and converts the pending publisher into a regular publisher. A pending publisher
+does not reserve the package name. OIDC publishing needs no stored PyPI API token.
+
+The GitHub `pypi` environment must allow version tags and require a maintainer
+review. After validation, the publishing job waits for that review before upload.
+
 ## Validate a release
 
 Use an empty artifact directory and a new benchmark output directory:
