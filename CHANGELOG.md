@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.1 - 2026-11-11
 
 - Fix Vault credential-source construction for workspace CLI and MCP operations.
   Offline plans remain credential-free; execution honors the application's

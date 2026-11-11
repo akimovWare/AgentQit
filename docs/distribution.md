@@ -43,13 +43,13 @@ instead of `main` to pin a source revision.
 ## Install a built wheel
 
 ```sh
-uv tool install --python 3.12 /absolute/path/to/agentqit-0.1.0-py3-none-any.whl
+uv tool install --python 3.12 /absolute/path/to/agentqit-0.1.1-py3-none-any.whl
 ```
 
 For browser support:
 
 ```sh
-uv tool install --python 3.12 'agentqit[browser] @ file:///absolute/path/to/agentqit-0.1.0-py3-none-any.whl'
+uv tool install --python 3.12 'agentqit[browser] @ file:///absolute/path/to/agentqit-0.1.1-py3-none-any.whl'
 qa browser install --headless-only
 ```
 
@@ -97,7 +97,7 @@ There is no background auto-updater or update-notification service.
 To select or roll back to a specific published version:
 
 ```sh
-uv tool install --force --python 3.12 'agentqit[browser]==0.1.0'
+uv tool install --force --python 3.12 'agentqit[browser]==0.1.1'
 qa browser install --headless-only
 ```
 
