@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import sys
 
 import anyio
 import httpx
@@ -161,3 +163,53 @@ async def test_caller_cannot_enable_mutation_when_the_host_has_not_granted_it(tm
     assert result.exit_code == 7 and result.status == "blocked"
     assert result.error.code == "HOST_MUTATION_BLOCKED"
     assert result.error.execution_outcome == "not_sent"
+
+
+@pytest.mark.parametrize("auth_mode", ["session", "token-env"])
+async def test_vault_workspace_plan_is_lazy_and_execution_uses_the_selected_environment(tmp_path, auth_mode):
+    workspace(tmp_path)
+    profile_path = tmp_path / "profile.yaml"
+    profile = yaml.safe_load(profile_path.read_text())
+    profile["credentials"] = {
+        "provider": "vault-cli",
+        "address": "https://vault.invalid",
+        "authMode": auth_mode,
+        "bindings": {"orders/token": {"mount": "team", "path": "qa/orders", "field": "api-token"}},
+    }
+    profile_path.write_text(yaml.safe_dump(profile))
+    marker = tmp_path / "vault-called"
+    executable = tmp_path / "vault"
+    expected_token = "synthetic-vault-session" if auth_mode == "token-env" else None
+    executable.write_text(
+        f"#!{sys.executable}\n"
+        "import os, sys\n"
+        "from pathlib import Path\n"
+        f"Path({str(marker)!r}).write_text('called')\n"
+        "assert sys.argv[1:3] == ['kv', 'get']\n"
+        "assert '-field=api-token' in sys.argv\n"
+        f"assert os.environ.get('VAULT_TOKEN') == {expected_token!r}\n"
+        "sys.stdout.write('synthetic-vault-secret')\n"
+    )
+    executable.chmod(0o700)
+    sent = []
+
+    def handle(request):
+        sent.append(request)
+        return httpx.Response(200, json={"echo": request.headers["authorization"]})
+
+    app = WorkspaceApplication(
+        Workspace.load(tmp_path),
+        env={"PATH": str(tmp_path) + os.pathsep + os.defpath, "VAULT_TOKEN": "synthetic-vault-session"},
+        http_factory=lambda: HttpxAdapter(httpx.AsyncClient(transport=httpx.MockTransport(handle))),
+    )
+    try:
+        planned = await app.plan("orders.get", {"id": 3})
+        assert planned.exit_code == 0 and planned.result["network_checked"] is False
+        assert not marker.exists() and sent == []
+        observed = await app.invoke("orders.get", {"id": 3})
+        assert observed.exit_code == 0 and observed.result["status_code"] == 200
+        assert marker.exists() and len(sent) == 1
+        assert sent[0].headers["authorization"] == "Bearer synthetic-vault-secret"
+        assert "synthetic-vault-secret" not in observed.model_dump_json()
+    finally:
+        await app.aclose()

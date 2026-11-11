@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Fix Vault credential-source construction for workspace CLI and MCP operations.
+  Offline plans remain credential-free; execution honors the application's
+  explicitly supplied credential environment.
+
 ## 0.1.0 - 2026-11-02
 
 - CPython 3.12, 3.13, and 3.14 support on macOS and Linux.

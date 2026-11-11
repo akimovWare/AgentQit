@@ -146,6 +146,43 @@ async def test_actual_stdio_process_keeps_protocol_stdout_clean(workspace_files)
             assert result.structured_content["result"]["network_checked"] is False
 
 
+@pytest.mark.parametrize("mode", ["auto", "legacy"])
+async def test_stdio_vault_workspace_plan_does_not_resolve_credentials(workspace_files, mode):
+    manifest_path = workspace_files / "agentqit.yaml"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["auth"] = {"api-vault": {"kind": "bearer", "credentialRef": "sample/api-token"}}
+    manifest_path.write_text(json.dumps(manifest))
+    profile_path = workspace_files / "profile.yaml"
+    profile = json.loads(profile_path.read_text())
+    profile["services"]["api"]["authRef"] = "api-vault"
+    profile["credentials"] = {
+        "provider": "vault-cli",
+        "address": "https://vault.invalid",
+        "bindings": {"sample/api-token": {"mount": "team", "path": "qa/sample", "field": "token"}},
+    }
+    profile_path.write_text(json.dumps(profile))
+    # If planning accidentally resolves credentials, this executable records it.
+    marker = workspace_files / "vault-called"
+    vault = workspace_files / "vault"
+    vault.write_text(
+        f"#!{sys.executable}\nfrom pathlib import Path\nPath({str(marker)!r}).touch()\nraise SystemExit(1)\n"
+    )
+    vault.chmod(0o700)
+    parameters = StdioServerParameters(
+        command=sys.executable,
+        args=["-m", "qa_mcp", "--workspace", str(workspace_files)],
+        cwd=workspace_files,
+        env={"PATH": str(workspace_files)},
+    )
+    with anyio.fail_after(120):
+        async with Client(parameters, mode=mode, read_timeout_seconds=90) as client:
+            result = await client.call_tool("plan_operation", {"operation_id": "items.list"})
+            assert not result.is_error, result.structured_content
+            assert result.structured_content["result"]["network_checked"] is False
+            assert json.loads(result.content[0].text) == result.structured_content
+            assert not marker.exists()
+
+
 @pytest.mark.parametrize("browser_enabled", [False, True])
 async def test_mcp_advertises_only_configured_browser_capabilities(workspace_files, browser_enabled):
     manifest_path = workspace_files / "agentqit.yaml"

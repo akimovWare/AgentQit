@@ -183,7 +183,7 @@ class WorkspaceApplication:
             return UnavailableCredentialSource()
         if isinstance(config, EnvironmentCredentialConfig):
             return EnvironmentCredentialSource(config, self._env)
-        return VaultCliCredentialSource(config, Path("vault"))
+        return VaultCliCredentialSource(config, executable=Path("vault"), env=self._env)
 
     async def _execute(
         self,
