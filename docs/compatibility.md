@@ -69,6 +69,13 @@ For an incompatible revision, add a new baseline and explicit migration guidance
 instead of replacing the old contract silently. Schemas cannot prove preservation
 of runtime semantics; behavioral tests remain necessary.
 
+## Patch 0.1.1
+
+Vault-backed workspace CLI and MCP operations construct the credential source
+correctly and honor an explicitly supplied application credential environment.
+Existing profiles, operation catalogs, and result schemas remain compatible;
+offline planning does not retrieve credentials.
+
 ## Upgrades and rollback
 
 Finish tasks, stop MCP, back up the workspace, read release notes, and update the

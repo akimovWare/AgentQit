@@ -69,7 +69,7 @@ Complete [fresh installation checks](verification.md) outside the checkout, then
 commit the release source and verify identity:
 
 ```sh
-uv run python tools/release_check.py dist --version 0.1.0
+uv run python tools/release_check.py dist --version 0.1.1
 ```
 
 The check requires a clean source tree and matching version/changelog metadata.
