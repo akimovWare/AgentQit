@@ -79,6 +79,26 @@ def test_profile_rejects_secret_query_keys_without_echoing_the_url(tmp_path, sec
     assert "sample.invalid" not in str(raised.value)
 
 
+@pytest.mark.parametrize(
+    "dsn",
+    [
+        "postgresql://user:synthetic-private-value@db-a.invalid:5432,db-b.invalid:5433/data",
+        "postgresql://db-a.invalid:5432,db-b.invalid:5433/data?%70assword=synthetic-private-value",
+    ],
+)
+def test_profile_rejects_credentials_in_multi_host_dsn(tmp_path, dsn):
+    document = _profile_document("databases", "")
+    document["databases"]["sample"]["dsn"] = dsn
+    (tmp_path / "qa.yaml").write_text(yaml.safe_dump(document))
+
+    with pytest.raises(RuntimeFailure) as raised:
+        ProfileLoader(tmp_path, env={}).load("qa")
+
+    assert raised.value.code == "PROFILE_INVALID"
+    assert "must not contain credentials" in str(raised.value)
+    assert "synthetic-private-value" not in str(raised.value)
+
+
 @pytest.mark.parametrize("section", ["services", "endpoints", "databases"])
 def test_nonsecret_url_query_parameters_remain_unchanged(section):
     document = _profile_document(section, "mode=qa&client_id=public-client&sslmode=require")

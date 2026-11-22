@@ -286,12 +286,21 @@ class DatabaseServiceConfig(BaseModel):
     @field_validator("dsn")
     @classmethod
     def validate_dsn(cls, value: str) -> str:
-        parsed = urlsplit(value)
-        _validate_url_port(parsed)
-        if parsed.scheme not in {"postgres", "postgresql"} or not parsed.hostname or not parsed.path.strip("/"):
+        try:
+            parsed = urlsplit(value)
+        except ValueError:
+            raise ValueError("dsn must be a valid PostgreSQL URL") from None
+        if parsed.scheme not in {"postgres", "postgresql"} or not parsed.netloc or not parsed.path.strip("/"):
             raise ValueError("dsn must be an absolute PostgreSQL URL with a database name")
         if parsed.username is not None or parsed.password is not None or _contains_credential_query(parsed.query):
             raise ValueError("dsn must not contain credentials; use usernameRef/passwordRef")
+        # urllib treats the entire authority as one host and port. Validate each
+        # entry independently and leave host order and options intact for asyncpg.
+        for host in parsed.netloc.split(","):
+            address = urlsplit(f"//{host}")
+            if not address.hostname or any(character.isspace() for character in address.hostname):
+                raise ValueError("dsn must contain a hostname for each PostgreSQL server")
+            _validate_url_port(address)
         return value
 
     @model_validator(mode="after")

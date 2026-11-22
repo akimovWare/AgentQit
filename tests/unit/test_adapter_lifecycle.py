@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import anyio
+import asyncpg
 import pytest
 
 from qa_runtime.adapters.credentials import InMemoryCredentialSource
@@ -54,6 +55,27 @@ def adapter(kind, resources):
     instance = AioKafkaAdapter({name: config for name in resources}, credentials, SecretRedactor())
     instance._producers = resources
     return instance, instance._producers
+
+
+async def test_no_matching_database_server_is_unavailable_before_query(monkeypatch):
+    config = DatabaseServiceConfig(
+        dsn="postgresql://db-a.invalid:5432,db-b.invalid:5433/data?target_session_attrs=read-write",
+        usernameRef="user",
+        passwordRef="pass",
+    )
+    instance = AsyncpgAdapter({"db": config}, InMemoryCredentialSource({}), SecretRedactor())
+
+    async def unavailable_pool(database, config):
+        raise asyncpg.TargetServerAttributeNotMatched("No writable servers")
+
+    monkeypatch.setattr(instance, "_pool_for", unavailable_pool)
+
+    with pytest.raises(RuntimeFailure) as caught:
+        await instance.execute("db", "SELECT 1", (), fetch="value", mutating=False, timeout_seconds=None)
+
+    assert caught.value.code == "DB_UNAVAILABLE"
+    assert caught.value.execution_outcome == "not_sent"
+    assert caught.value.retryable is True
 
 
 @pytest.mark.parametrize("kind", ["http", "database", "kafka"])

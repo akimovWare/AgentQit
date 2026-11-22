@@ -69,6 +69,13 @@ For an incompatible revision, add a new baseline and explicit migration guidance
 instead of replacing the old contract silently. Schemas cannot prove preservation
 of runtime semantics; behavioral tests remain necessary.
 
+## Patch 0.1.2
+
+Existing single-host PostgreSQL profiles use the same DSN, credential references,
+and TLS configuration. To enable selection of a writable host for new connections,
+add host entries and `target_session_attrs=read-write` to the existing `dsn` field.
+See [PostgreSQL connections](workspaces.md#postgresql-connections).
+
 ## Patch 0.1.1
 
 Vault-backed workspace CLI and MCP operations construct the credential source
