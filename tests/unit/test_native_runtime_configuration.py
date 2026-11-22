@@ -66,6 +66,36 @@ def test_invalid_endpoint_port_is_rejected_before_transport_or_credentials(port)
         DatabaseServiceConfig(dsn=f"postgresql://db.invalid:{port}/data", usernameRef="user", passwordRef="pass")
 
 
+@pytest.mark.parametrize(
+    "dsn",
+    [
+        "postgresql://writer-alias.example.invalid:5432/data",
+        "postgres://db.invalid/data?sslmode=require",
+        "postgresql://[2001:db8::1]/data",
+        "postgresql://db-a.invalid:5432,db-b.invalid:5433/data?target_session_attrs=read-write&sslmode=verify-full",
+        "postgresql://db-a.invalid,writer-alias.invalid:5433,db-c.invalid/data",
+        "postgresql://[2001:db8::1]:5432,[2001:db8::2]:5433/data",
+    ],
+)
+def test_database_dsn_preserves_driver_inputs(dsn):
+    config = DatabaseServiceConfig(dsn=dsn, usernameRef="user", passwordRef="pass")
+
+    assert config.dsn == dsn
+
+
+@pytest.mark.parametrize(
+    "invalid_host", ["", " ", ":5432", "db.invalid:", "db.invalid:bad", "db.invalid:0", "db.invalid:65536"]
+)
+@pytest.mark.parametrize("invalid_first", [True, False])
+def test_database_dsn_checks_every_host_and_port(invalid_host, invalid_first):
+    hosts = [invalid_host, "db.valid.invalid:5432"]
+    if not invalid_first:
+        hosts.reverse()
+
+    with pytest.raises(ValidationError):
+        DatabaseServiceConfig(dsn=f"postgresql://{','.join(hosts)}/data", usernameRef="user", passwordRef="pass")
+
+
 @pytest.mark.parametrize("timeout", [float("inf"), float("nan"), 301])
 def test_profile_transport_timeouts_have_finite_shared_upper_bound(timeout):
     with pytest.raises(ValidationError):

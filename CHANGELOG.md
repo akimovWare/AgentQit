@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2 - 2026-11-22
+
+- Accept PostgreSQL DSNs with multiple hosts and per-host ports. Asyncpg can
+  select a writable server with `target_session_attrs=read-write`.
+- Report an unavailable database when no host satisfies `target_session_attrs`.
+
 ## 0.1.1 - 2026-11-11
 
 - Fix Vault credential-source construction for workspace CLI and MCP operations.

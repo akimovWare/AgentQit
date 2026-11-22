@@ -78,6 +78,25 @@ An environment source never falls back to Vault or a helper.
 Vault profiles remain supported with their explicit provider configuration.
 `doctor` and `plan` validate locally without retrieving credentials.
 
+## PostgreSQL connections
+
+Use a single host (including a DNS alias or load balancer) or a comma-separated
+list of hosts in `databases.<name>.dsn`. Each host can specify its own port.
+Keep database credentials in the configured credential source:
+
+```yaml
+databases:
+  orders:
+    dsn: postgresql://db-a.example.invalid:5432,db-b.example.invalid:5433/orders?target_session_attrs=read-write
+    usernameRef: orders/db/username
+    passwordRef: orders/db/password
+```
+
+With `target_session_attrs=read-write`, asyncpg selects a server that accepts
+writes when it opens a connection. Without that option, normal driver defaults
+apply. A DNS alias can route to the writer if the balancer is configured for it
+and its hostname passes TLS verification. `targetServerType` is a JDBC option.
+
 ## MCP
 
 Launch the local server using the installed application:

@@ -110,7 +110,12 @@ class AsyncpgAdapter:
                 details={"sqlstate": error.sqlstate},
                 execution_outcome=None if action_started else "not_sent",
             ) from error
-        except (asyncpg.PostgresError, asyncpg.InterfaceError, OSError) as error:
+        except (
+            asyncpg.PostgresError,
+            asyncpg.InterfaceError,
+            asyncpg.TargetServerAttributeNotMatched,
+            OSError,
+        ) as error:
             raise RuntimeFailure(
                 ExitCode.ENVIRONMENT_UNAVAILABLE,
                 "DB_UNAVAILABLE",
