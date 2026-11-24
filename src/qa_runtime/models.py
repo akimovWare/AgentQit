@@ -483,6 +483,7 @@ class Profile(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     environment: str = "unknown"
+    http_response_decimals: bool = Field(default=False, alias="httpResponseDecimals")
     services: dict[str, HttpServiceConfig] = Field(default_factory=dict)
     databases: dict[str, DatabaseServiceConfig] = Field(default_factory=dict)
     kafka: dict[str, KafkaClusterConfig] = Field(default_factory=dict)

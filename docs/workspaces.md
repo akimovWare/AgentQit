@@ -44,6 +44,14 @@ An optional `product` selects an installed plugin for special composition; local
 `profile: qa.yaml` in `agentqit.yaml`; the filename is not fixed. Keep the workspace
 outside the installed tool environment so application upgrades do not replace it.
 
+## Exact HTTP response decimals
+
+Set `httpResponseDecimals: true` at the top level of a profile to read fractional
+and exponent-form JSON numbers in every standard HTTP response as `Decimal`.
+CLI JSON, MCP results and saved evidence represent these values as exact decimal
+strings. JSON integers remain integers. Profiles without this setting retain
+the existing floating-point behavior.
+
 ## Explicit environment credentials
 
 The profile stores variable names and references, not secret values:

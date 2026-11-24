@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add an opt-in profile setting for exact decimal values in HTTP JSON responses.
+
 ## 0.1.2 - 2026-11-22
 
 - Accept PostgreSQL DSNs with multiple hosts and per-host ports. Asyncpg can

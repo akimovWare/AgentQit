@@ -10,6 +10,7 @@ import pytest
 from typer.testing import CliRunner
 
 from qa_cli.app import app
+from qa_mcp.rendering import tool_result
 from qa_runtime.adapters.httpx import HttpxAdapter
 from qa_runtime.contracts import ExitCode
 from qa_runtime.engine import QaRuntime
@@ -23,7 +24,8 @@ from qa_runtime.registry import OperationRegistry
 def environment(monkeypatch, tmp_path):
     profiles = tmp_path / "profiles"
     profiles.mkdir()
-    (profiles / "qa.yaml").write_text("environment: qa\nservices:\n  fake:\n    baseUrl: https://fake.invalid\n")
+    profile = profiles / "qa.yaml"
+    profile.write_text("environment: qa\nservices:\n  fake:\n    baseUrl: https://fake.invalid\n")
     registry = tmp_path / "registry.yaml"
     registry.write_text(
         json.dumps(
@@ -55,16 +57,18 @@ def environment(monkeypatch, tmp_path):
 
     def handle(request):
         calls.append(request)
+        if request.url.path == "/decimal":
+            return httpx.Response(200, content=b'{"value":12345678901.12345678,"count":2,"items":[1.2e-20,null]}')
         return httpx.Response(200, json={"id": "saved-id", "password": "canary-secret"})
 
     client = httpx.AsyncClient(transport=httpx.MockTransport(handle))
     plugin = ProductPlugin(product_id="fake", registry_path=registry)
     monkeypatch.setattr("qa_cli.app.product_plugin_for", lambda _: plugin)
-    monkeypatch.setattr("qa_runtime.bootstrap.HttpxAdapter", lambda **_: HttpxAdapter(client))
+    monkeypatch.setattr("qa_runtime.bootstrap.HttpxAdapter", lambda **kwargs: HttpxAdapter(client, **kwargs))
     monkeypatch.setenv("QA_CLI_PRODUCT", "fake")
     monkeypatch.setenv("QA_CLI_PROFILES_DIR", str(profiles))
     monkeypatch.setenv("QA_CLI_PROFILE", "qa")
-    return {"calls": calls, "registry": registry, "run": tmp_path / "run", "plugin": plugin}
+    return {"calls": calls, "registry": registry, "run": tmp_path / "run", "plugin": plugin, "profile": profile}
 
 
 def invoke(*args, **kwargs):
@@ -73,6 +77,33 @@ def invoke(*args, **kwargs):
     payload = json.loads(result.stdout)
     assert payload["exit_code"] == result.exit_code
     return result.exit_code, payload
+
+
+@pytest.mark.parametrize(
+    ("profile_setting", "expected"),
+    [
+        ("", {"value": 12345678901.123457, "count": 2, "items": [1.2e-20, None]}),
+        ("httpResponseDecimals: true\n", {"value": "12345678901.12345678", "count": 2, "items": ["1.2E-20", None]}),
+    ],
+)
+def test_http_response_decimals_in_cli_evidence_and_mcp(environment, profile_setting, expected):
+    profile = environment["profile"]
+    profile.write_text(profile_setting + profile.read_text())
+    registry = environment["registry"]
+    document = json.loads(registry.read_text())
+    document["operations"][1]["config"]["path"] = "/decimal"
+    registry.write_text(json.dumps(document))
+    directory = environment["run"]
+
+    code, payload = invoke("invoke", "read", "--run-dir", str(directory))
+
+    assert code == 0
+    assert payload["result"]["body"] == expected
+    assert type(payload["result"]["body"]["count"]) is int
+    result = RunStore(directory).records()[0].result
+    mcp_result = tool_result(result)
+    assert mcp_result.structured_content["result"]["body"] == expected
+    assert json.loads(mcp_result.content[0].text)["result"]["body"] == expected
 
 
 def test_plan_validates_mutation_without_io_or_authorization(environment):
