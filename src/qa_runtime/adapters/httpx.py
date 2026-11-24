@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 import httpx
 
@@ -81,7 +81,7 @@ class HttpxAdapter:
 
         try:
             body = json.loads(content, parse_float=self._parse_float)
-        except (ValueError, UnicodeDecodeError):
+        except (ValueError, UnicodeDecodeError, InvalidOperation):
             try:
                 body = content.decode(response.encoding or "utf-8")
             except (UnicodeDecodeError, LookupError):
