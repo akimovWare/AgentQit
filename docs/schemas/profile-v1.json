@@ -558,6 +558,11 @@
       "title": "Environment",
       "type": "string"
     },
+    "httpResponseDecimals": {
+      "default": false,
+      "title": "Httpresponsedecimals",
+      "type": "boolean"
+    },
     "kafka": {
       "additionalProperties": {
         "$ref": "#/$defs/KafkaClusterConfig"

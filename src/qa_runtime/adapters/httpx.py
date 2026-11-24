@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+from decimal import Decimal, InvalidOperation
 
 import httpx
 
@@ -16,10 +17,17 @@ SENSITIVE_HEADERS = {"authorization", "cookie", "proxy-authorization", "set-cook
 
 
 class HttpxAdapter:
-    def __init__(self, client: httpx.AsyncClient | None = None, *, tls_provider: TlsProvider | None = None) -> None:
+    def __init__(
+        self,
+        client: httpx.AsyncClient | None = None,
+        *,
+        tls_provider: TlsProvider | None = None,
+        preserve_response_decimals: bool = False,
+    ) -> None:
         self._owns_client = client is None
         self._client = client
         self._tls_provider = tls_provider
+        self._parse_float = Decimal if preserve_response_decimals else float
         self._clients: dict[str | None, httpx.AsyncClient] = {}
 
     async def send(self, request: HttpRequest, context: ExecutionContext) -> HttpResult:
@@ -72,8 +80,8 @@ class HttpxAdapter:
             ) from error
 
         try:
-            body = json.loads(content)
-        except (ValueError, UnicodeDecodeError):
+            body = json.loads(content, parse_float=self._parse_float)
+        except (ValueError, UnicodeDecodeError, InvalidOperation):
             try:
                 body = content.decode(response.encoding or "utf-8")
             except (UnicodeDecodeError, LookupError):

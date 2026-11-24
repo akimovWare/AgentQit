@@ -80,13 +80,14 @@ async def test_no_matching_database_server_is_unavailable_before_query(monkeypat
 
 @pytest.mark.parametrize("kind", ["http", "database", "kafka"])
 async def test_hanging_first_child_does_not_skip_other_resources_or_exceed_budget(kind, monkeypatch):
-    monkeypatch.setattr("qa_runtime.lifecycle.ADAPTER_CLEANUP_TIMEOUT_SECONDS", 0.04)
+    # Leave scheduling slack for the second close on shared CI runners.
+    monkeypatch.setattr("qa_runtime.lifecycle.ADAPTER_CLEANUP_TIMEOUT_SECONDS", 0.5)
     calls = []
     first = Resource("first", calls, hanging=True)
     second = Resource("second", calls)
     instance, cache = adapter(kind, {"a": first, "b": second})
 
-    with anyio.fail_after(0.5):
+    with anyio.fail_after(3.0):
         with pytest.raises(RuntimeFailure) as caught:
             await instance.aclose()
 

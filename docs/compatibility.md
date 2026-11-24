@@ -69,6 +69,13 @@ For an incompatible revision, add a new baseline and explicit migration guidance
 instead of replacing the old contract silently. Schemas cannot prove preservation
 of runtime semantics; behavioral tests remain necessary.
 
+## Patch 0.1.3
+
+Existing profiles retain floating-point HTTP response decoding. Opt in by
+setting `httpResponseDecimals: true` to retain fractional JSON values as exact
+decimal strings in CLI output, MCP results and evidence. JSON integers stay
+integers. Remove the new setting before rolling back to 0.1.2.
+
 ## Patch 0.1.2
 
 Existing single-host PostgreSQL profiles use the same DSN, credential references,

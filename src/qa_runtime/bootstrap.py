@@ -167,7 +167,10 @@ async def build_runtime(
         resources.extend(components.handlers)
         resources.extend(components.auth_providers.values())
         if http_port is None:
-            http_port = HttpxAdapter(tls_provider=components.tls_provider)
+            http_port = HttpxAdapter(
+                tls_provider=components.tls_provider,
+                preserve_response_decimals=scoped.http_response_decimals,
+            )
         http = own(http_port)
         if database_port is None:
             database_port = AsyncpgAdapter(
