@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.1.3 - 2026-11-24
 
 - Add an opt-in profile setting for exact decimal values in HTTP JSON responses.
 
